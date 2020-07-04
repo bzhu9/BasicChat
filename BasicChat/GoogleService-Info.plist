@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>116181029925-6ua4fndu208v5d2fmk4o3dsjt5qnuv7q.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.116181029925-6ua4fndu208v5d2fmk4o3dsjt5qnuv7q</string>
+	<key>API_KEY</key>
+	<string>AIzaSyByK2VVa1TZhKUCzQ7ZI9siheQhp4eKmiQ</string>
+	<key>GCM_SENDER_ID</key>
+	<string>116181029925</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.zhu.BasicChat</string>
+	<key>PROJECT_ID</key>
+	<string>basicchat-70da4</string>
+	<key>STORAGE_BUCKET</key>
+	<string>basicchat-70da4.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:116181029925:ios:8405f7880673af48e8dbcc</string>
+	<key>DATABASE_URL</key>
+	<string>https://basicchat-70da4.firebaseio.com</string>
+</dict>
+</plist>

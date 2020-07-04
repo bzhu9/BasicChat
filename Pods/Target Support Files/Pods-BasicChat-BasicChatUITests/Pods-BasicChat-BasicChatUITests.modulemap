@@ -1,0 +1,6 @@
+framework module Pods_BasicChat_BasicChatUITests {
+  umbrella header "Pods-BasicChat-BasicChatUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}
