@@ -6,10 +6,16 @@ target 'BasicChat' do
   use_frameworks!
 
   # Pods for BasicChat
+#Firebase
 pod 'Firebase/Core'
 pod 'Firebase/Auth'
 pod 'Firebase/Database'
 
+#Facebook
+pod 'FBSDKLoginKit'
+
+#Google Log In
+pod 'GoogleSignIn'
 
   target 'BasicChatTests' do
     inherit! :search_paths
