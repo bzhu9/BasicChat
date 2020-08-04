@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="fZX-rd-Ikw">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="fZX-rd-Ikw">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
@@ -26,7 +26,6 @@
         <!--Tab Bar Controller-->
         <scene sceneID="9zW-hn-qRy">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="kjG-po-nZ1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <tabBarController id="fZX-rd-Ikw" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="guh-0B-KcN">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="49"/>
@@ -38,6 +37,7 @@
                         <segue destination="zcT-5H-k0F" kind="relationship" relationship="viewControllers" id="4tA-6W-uAE"/>
                     </connections>
                 </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="kjG-po-nZ1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="599" y="-615"/>
         </scene>
@@ -82,7 +82,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Profile" id="mCc-yl-Kom"/>
                     <connections>
-                        <outlet property="tableView" destination="GeM-ES-lBi" id="mUm-Sg-eXS"/>
+                        <outlet property="tableView" destination="GeM-ES-lBi" id="YCq-09-Dxd"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4eS-7v-Cm8" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

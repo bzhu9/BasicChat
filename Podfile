@@ -17,6 +17,11 @@ pod 'FBSDKLoginKit'
 #Google Log In
 pod 'GoogleSignIn'
 
+pod 'MessageKit'
+pod 'JGProgressHUD'
+pod 'RealmSwift'
+pod 'SDWebImage'
+
   target 'BasicChatTests' do
     inherit! :search_paths
     # Pods for testing
