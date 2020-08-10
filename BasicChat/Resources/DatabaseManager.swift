@@ -43,7 +43,7 @@ extension DatabaseManager {
         safeEmail = safeEmail.replacingOccurrences(of: "@", with: "-")
         
         database.child(safeEmail).observeSingleEvent(of: .value, with: {snapshot in
-            guard snapshot.value != nil else {
+            guard snapshot.value as? [String: Any] != nil else {
                 completion(false)
                 return
             }
@@ -337,6 +337,9 @@ extension DatabaseManager {
                     }
                     let media = Media(url: imageUrl, image: nil, placeholderImage: placeholder, size: CGSize(width: 300, height: 300))
                     kind = .photo(media)
+                }
+                else if type == "video" {
+                    
                 }
                 else {
                     kind = .text(content)
