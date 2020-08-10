@@ -35,11 +35,12 @@
                     <connections>
                         <segue destination="yVS-gG-tOD" kind="relationship" relationship="viewControllers" id="Gne-7z-Ohf"/>
                         <segue destination="zcT-5H-k0F" kind="relationship" relationship="viewControllers" id="4tA-6W-uAE"/>
+                        <segue destination="K8m-at-2Vb" kind="relationship" relationship="viewControllers" id="vhz-7B-jxp"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kjG-po-nZ1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="599" y="-615"/>
+            <point key="canvasLocation" x="1061" y="-628"/>
         </scene>
         <!--Profile-->
         <scene sceneID="rUj-9P-Ot4">
@@ -57,6 +58,23 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Oj2-uB-6L9" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1061" y="104"/>
+        </scene>
+        <!--Announcements-->
+        <scene sceneID="YUO-uy-Gay">
+            <objects>
+                <navigationController id="K8m-at-2Vb" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Announcements" id="Gnv-Km-BPU"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="ESS-Xe-BM9">
+                        <rect key="frame" x="0.0" y="44" width="414" height="96"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="Qgc-Fi-6Ee" kind="relationship" relationship="rootViewController" id="hOb-qr-Ois"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="VFk-Y4-eD1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2013" y="98"/>
         </scene>
         <!--Profile-->
         <scene sceneID="ZSE-bJ-sZg">
@@ -88,6 +106,22 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4eS-7v-Cm8" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1061" y="871"/>
+        </scene>
+        <!--Announcements-->
+        <scene sceneID="M8P-1K-fnV">
+            <objects>
+                <viewController id="Qgc-Fi-6Ee" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="q0c-PO-pcm">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="Cbi-AF-mrZ"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Announcements" id="vDq-nY-upd"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="H1c-cK-ayY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2012" y="871"/>
         </scene>
         <!--Chats-->
         <scene sceneID="QTh-wW-KRD">
