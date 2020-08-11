@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		07F9890B81EF2DD482FCDD5F /* Pods_BasicChat_BasicChatUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3483BBCB9C814E30FFD744F3 /* Pods_BasicChat_BasicChatUITests.framework */; };
 		73F11553551EBBF1FFDF087D /* Pods_BasicChatTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0CFD9FA63D35B1FF61DEBF57 /* Pods_BasicChatTests.framework */; };
+		A91855B324E236460038423C /* NewConversationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91855B224E236460038423C /* NewConversationCell.swift */; };
 		A945C69E24DB33ED009F9D95 /* ConversationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A945C69D24DB33EC009F9D95 /* ConversationTableViewCell.swift */; };
 		A94C481D24B0D26000AD1F92 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A94C481C24B0D26000AD1F92 /* GoogleService-Info.plist */; };
 		A94C481F24B11EEF00AD1F92 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A94C481E24B11EEF00AD1F92 /* DatabaseManager.swift */; };
@@ -56,6 +57,7 @@
 		922182C03040E182F39C23A9 /* Pods-BasicChat-BasicChatUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BasicChat-BasicChatUITests.release.xcconfig"; path = "Target Support Files/Pods-BasicChat-BasicChatUITests/Pods-BasicChat-BasicChatUITests.release.xcconfig"; sourceTree = "<group>"; };
 		95211A154F706AE4E9518552 /* Pods-BasicChat-BasicChatUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BasicChat-BasicChatUITests.debug.xcconfig"; path = "Target Support Files/Pods-BasicChat-BasicChatUITests/Pods-BasicChat-BasicChatUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		A80540DE9BEE258ED9F47EAE /* Pods_BasicChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BasicChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A91855B224E236460038423C /* NewConversationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewConversationCell.swift; sourceTree = "<group>"; };
 		A945C69D24DB33EC009F9D95 /* ConversationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationTableViewCell.swift; sourceTree = "<group>"; };
 		A94C481C24B0D26000AD1F92 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A94C481E24B11EEF00AD1F92 /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
@@ -148,6 +150,7 @@
 				A997D8C824AA2C1200118683 /* Storyboards */,
 				A9D2E45324A51707007E3BB1 /* Assets.xcassets */,
 				A945C69D24DB33EC009F9D95 /* ConversationTableViewCell.swift */,
+				A91855B224E236460038423C /* NewConversationCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -537,6 +540,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A997D8D824AA324D00118683 /* LoginViewController.swift in Sources */,
+				A91855B324E236460038423C /* NewConversationCell.swift in Sources */,
 				A94C481F24B11EEF00AD1F92 /* DatabaseManager.swift in Sources */,
 				A997D8CC24AA2D1800118683 /* RegisterViewController.swift in Sources */,
 				A997D8D224AA2D5E00118683 /* NewConversationViewController.swift in Sources */,
