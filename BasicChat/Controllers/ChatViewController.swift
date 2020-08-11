@@ -208,7 +208,7 @@ class ChatViewController: MessagesViewController {
                 DispatchQueue.main.async {
                     self?.messagesCollectionView.reloadDataAndKeepOffset()
                     if shouldScrollToBottom {
-                        self?.messagesCollectionView.scrollToBottom()
+                        self?.messagesCollectionView.scrollToLastItem()
                     }
                 }
             case .failure(let error):
@@ -346,6 +346,7 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
                 if success {
                     print ("Message Sent")
                     self?.isNewConversation = false
+                    self?.messageInputBar.inputTextView.text = nil
                 }
                 else {
                     print("Failed to send")
@@ -358,9 +359,10 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
             }
             
             //append to existing conversation data
-            DatabaseManager.shared.sendMessage(to: conversationId, otherUserEmail: otherUserEmail, name: name, newMessage: message, completion: { success in
+            DatabaseManager.shared.sendMessage(to: conversationId, otherUserEmail: otherUserEmail, name: name, newMessage: message, completion: { [weak self] success in
                 if success {
                     print("Message Sent")
+                    self?.messageInputBar.inputTextView.text = nil
                 }
                 else {
                     print("Failed to send")
