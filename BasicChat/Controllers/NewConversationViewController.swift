@@ -29,6 +29,7 @@ class NewConversationViewController: UIViewController {
     private let tableView: UITableView = {
         let table = UITableView()
         table.isHidden = true
+        table.tableFooterView = UIView(frame: .zero)
         table.register(NewConversationCell.self,
                        forCellReuseIdentifier: NewConversationCell.identifier)
         return table

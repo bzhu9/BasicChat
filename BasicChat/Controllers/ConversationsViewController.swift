@@ -17,6 +17,28 @@ struct Conversation {
     let latestMessage: LatestMessage
 }
 
+extension Conversation:Comparable{
+    static func < (lhs: Conversation, rhs: Conversation) -> Bool {
+        let lhsDateObject = ChatViewController.dateFormatter.date(from: lhs.latestMessage.date)
+        let rhsDateObject = ChatViewController.dateFormatter.date(from: rhs.latestMessage.date)
+        if lhsDateObject?.compare(rhsDateObject!) == .orderedAscending{
+            return true
+        }
+        return false
+    }
+    
+    static func == (lhs: Conversation, rhs: Conversation) -> Bool {
+        let lhsDateObject = ChatViewController.dateFormatter.date(from: lhs.latestMessage.date)
+        let rhsDateObject = ChatViewController.dateFormatter.date(from: rhs.latestMessage.date)
+        if lhsDateObject?.compare(rhsDateObject!) == .orderedSame{
+            return true
+        }
+        return false
+    }
+    
+    
+}
+
 struct LatestMessage {
     let date: String
     let text: String
@@ -32,6 +54,7 @@ class ConversationsViewController: UIViewController {
     private let tableView: UITableView = {
         let table = UITableView()
         table.isHidden = true
+        table.tableFooterView = UIView(frame: .zero)
         table.register(ConversationTableViewCell.self, forCellReuseIdentifier: ConversationTableViewCell.identifier)
         return table
     }()
@@ -88,7 +111,10 @@ class ConversationsViewController: UIViewController {
                 guard !conversations.isEmpty else {
                     return
                 }
-                self?.conversations = conversations
+                let sortedConversations = conversations.sorted(by: {(lhs:Conversation,rhs:Conversation) -> Bool in
+                    return lhs > rhs
+                } )
+                self?.conversations = sortedConversations
                 
                 DispatchQueue.main.async {
                     self?.tableView.reloadData()
