@@ -73,9 +73,14 @@ class ConversationsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .compose,
-                                                            target: self,
-                                                            action: #selector(didTapComposeButton))
+        let composeButton = UIBarButtonItem(barButtonSystemItem: .compose,
+                                            target: self,
+                                            action: #selector(didTapComposeButton))
+        let gcButton = UIBarButtonItem(image: UIImage(systemName: "person.3"),
+                                       style: .plain,
+                                       target: self,
+                                       action: #selector(didTapGroupChatButton))
+        navigationItem.rightBarButtonItems = [composeButton, gcButton]
         // Do any additional setup after loading the view.
         view.addSubview(tableView)
         view.addSubview(noConversationsLabel)
@@ -128,6 +133,15 @@ class ConversationsViewController: UIViewController {
     
     @objc private func didTapComposeButton() {
         let vc = NewConversationViewController()
+        vc.completion = { [weak self] result in
+            self?.createNewConversation(result: result)
+        }
+        let navVC = UINavigationController(rootViewController: vc)
+        present(navVC, animated: true)
+    }
+    
+    @objc private func didTapGroupChatButton() {
+        let vc = NewGroupChatViewController()
         vc.completion = { [weak self] result in
             self?.createNewConversation(result: result)
         }
