@@ -12,12 +12,14 @@ import JGProgressHUD
 
 struct Conversation {
     let id: String
-    let name: String
-    let otherUserEmail: String
+    let otherUsers: [SearchResult]
+//    let name: String
+    let isGroupChat: Bool
+//    let otherUserEmails: [String]
     let latestMessage: LatestMessage
 }
 
-extension Conversation:Comparable{
+extension Conversation: Comparable{
     static func < (lhs: Conversation, rhs: Conversation) -> Bool {
         let lhsDateObject = ChatViewController.dateFormatter.date(from: lhs.latestMessage.date)
         let rhsDateObject = ChatViewController.dateFormatter.date(from: rhs.latestMessage.date)
@@ -35,8 +37,6 @@ extension Conversation:Comparable{
         }
         return false
     }
-    
-    
 }
 
 struct LatestMessage {
@@ -140,11 +140,11 @@ class ConversationsViewController: UIViewController {
             
             let currentConversations = strongSelf.conversations
             if let targetConversation = currentConversations.first(where: {
-                $0.otherUserEmail == DatabaseManager.safeEmail(emailAddress: result.email)
+                $0.otherUsers[0].email == DatabaseManager.safeEmail(emailAddress: result.email)
             }) {
-                let vc = ChatViewController(with: targetConversation.otherUserEmail, id: targetConversation.id)
+                let vc = ChatViewController(users: targetConversation.otherUsers, id: targetConversation.id, isGroupChat: false)
                 vc.isNewConversation = false
-                vc.title = targetConversation.name
+                vc.title = targetConversation.otherUsers[0].name
                 vc.navigationItem.largeTitleDisplayMode = .never
                 strongSelf.navigationController?.pushViewController(vc, animated: true)
             }
@@ -156,10 +156,11 @@ class ConversationsViewController: UIViewController {
         present(navVC, animated: true)
     }
     
+    // WORK HERE
     @objc private func didTapGroupChatButton() {
         let vc = NewGroupChatViewController()
         vc.completion = { [weak self] result in
-            self?.createNewConversation(result: result)
+            self?.createNewGroupChat(result: result)
         }
         let navVC = UINavigationController(rootViewController: vc)
         present(navVC, animated: true)
@@ -176,15 +177,51 @@ class ConversationsViewController: UIViewController {
             }
             switch results {
             case .success(let conversationId):
-                let vc = ChatViewController(with: safeEmail, id: conversationId)
+                let vc = ChatViewController(users: [SearchResult(name: name, email: safeEmail)], id: conversationId, isGroupChat: false)
                 vc.isNewConversation = false
                 vc.title = name
                 vc.navigationItem.largeTitleDisplayMode = .never
                 strongSelf.navigationController?.pushViewController(vc, animated: true)
             case .failure(_):
-                let vc = ChatViewController(with: safeEmail, id: nil)
+                let vc = ChatViewController(users: [SearchResult(name: name, email: safeEmail)], id: nil, isGroupChat: false)
                 vc.isNewConversation = true
                 vc.title = name
+                vc.navigationItem.largeTitleDisplayMode = .never
+                strongSelf.navigationController?.pushViewController(vc, animated: true)
+            }
+        })
+    }
+    
+    private func createNewGroupChat (result: GroupChat) {
+        DatabaseManager.shared.groupChatExists(id: result.name, completion: { [weak self] results in
+            guard let strongSelf = self else {
+                return
+            }
+            
+            guard let myEmail = UserDefaults.standard.value(forKey: "email") as? String else {
+                return
+            }
+            
+            let safeEmail = DatabaseManager.safeEmail(emailAddress: myEmail)
+            
+            var otherUsers = [SearchResult]()
+            for member in result.members{
+                if member.email != safeEmail {
+                    otherUsers.append(member)
+                }
+            }
+            
+            switch results {
+            case .success(let groupChatId):
+                let vc = ChatViewController(users: otherUsers, id: groupChatId, isGroupChat: true)
+                vc.isNewConversation = false
+                vc.title = result.name
+                vc.navigationItem.largeTitleDisplayMode = .never
+                strongSelf.navigationController?.pushViewController(vc, animated: true)
+            case .failure(_):
+                let vc = ChatViewController(users: otherUsers, id: nil, isGroupChat: true)
+                vc.isNewConversation = true
+                vc.title = result.name
                 vc.navigationItem.largeTitleDisplayMode = .never
                 strongSelf.navigationController?.pushViewController(vc, animated: true)
             }
@@ -236,8 +273,15 @@ extension ConversationsViewController: UITableViewDelegate, UITableViewDataSourc
     }
     
     func openConversation (_ model: Conversation) {
-        let vc = ChatViewController(with: model.otherUserEmail, id: model.id)
-        vc.title = model.name
+        var vc: ChatViewController
+        if model.isGroupChat {
+            vc = ChatViewController(users: model.otherUsers, id: model.id, isGroupChat: true)
+            vc.title = model.id
+        }
+        else {
+            vc = ChatViewController(users: model.otherUsers, id: model.id, isGroupChat: false)
+            vc.title = model.otherUsers[0].name
+        }
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)
     }

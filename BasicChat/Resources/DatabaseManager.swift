@@ -113,6 +113,7 @@ extension DatabaseManager {
     
     public enum DatabaseError: Error {
         case failedToFetch
+        case userDoesNotExist
     }
 }
 
@@ -121,7 +122,7 @@ extension DatabaseManager {
 extension DatabaseManager {
     
     ///Creates a new conversation with target user email and first message sent
-    public func createNewConversation(with otherUserEmail: String, name:String, firstMessage: Message, completion: @escaping (Bool) -> Void) {
+    public func createNewConversation(with otherUserEmail: String, name:String, firstMessage: Message, completion: @escaping (Result<String, Error>) -> Void) {
         guard let currentEmail = UserDefaults.standard.value(forKey: "email") as? String,
             let currentName = UserDefaults.standard.value(forKey: "name") as? String else {
                 return
@@ -131,7 +132,7 @@ extension DatabaseManager {
         let ref = database.child("\(safeEmail)")
         ref.observeSingleEvent(of: .value, with: { [weak self] snapshot in
             guard var userNode = snapshot.value as? [String:Any] else {
-                completion(false)
+                completion(.failure(DatabaseError.failedToFetch))
                 print("User not found")
                 return
             }
@@ -204,7 +205,7 @@ extension DatabaseManager {
                 userNode["conversations"] = conversations
                 ref.setValue(userNode, withCompletionBlock: { error, _ in
                     guard error==nil else {
-                        completion(false)
+                        completion(.failure(DatabaseError.failedToFetch))
                         return
                     }
                     self?.finishCreatingConversation(name: name, conversationId: conversationId, firstMessage: firstMessage, completion: completion)
@@ -215,7 +216,7 @@ extension DatabaseManager {
                 userNode["conversations"] = [newConversationData]
                 ref.setValue(userNode, withCompletionBlock: { error, _ in
                     guard error==nil else {
-                        completion(false)
+                        completion(.failure(DatabaseError.failedToFetch))
                         return
                     }
                     self?.finishCreatingConversation(name: name, conversationId: conversationId, firstMessage: firstMessage, completion: completion)
@@ -224,7 +225,7 @@ extension DatabaseManager {
         })
     }
     
-    private func finishCreatingConversation (name: String, conversationId: String, firstMessage: Message, completion: @escaping (Bool) -> Void) {
+    private func finishCreatingConversation (name: String, conversationId: String, firstMessage: Message, completion: @escaping (Result<String, Error>) -> Void) {
         var message = ""
         
         switch firstMessage.kind {
@@ -252,7 +253,7 @@ extension DatabaseManager {
         let dateString = ChatViewController.dateFormatter.string(from: messageDate)
         
         guard let myEmail = UserDefaults.standard.value(forKey: "email") as? String else {
-            completion(false)
+            completion(.failure(DatabaseError.failedToFetch))
             return
         }
         let currentUserEmail = DatabaseManager.safeEmail(emailAddress: myEmail)
@@ -276,15 +277,41 @@ extension DatabaseManager {
         
         database.child("\(conversationId)").setValue(value, withCompletionBlock: { error, _ in
             guard error == nil else {
-                completion (false)
+                completion(.failure(DatabaseError.failedToFetch))
                 return
             }
-            completion (true)
+            completion (.success(conversationId))
         })
     }
     
     ///Fetches and returns all conversations for the user with passed in email
     public func getAllConversations(for email: String, completion: @escaping (Result<[Conversation], Error>) -> Void ) {
+        var groupChats = [Conversation]()
+        database.child("\(email)/group_chats").observe(.value, with: { snapshot in
+            guard let value = snapshot.value as? [[String:Any]] else {
+                completion(.failure(DatabaseError.failedToFetch))
+                return
+            }
+            groupChats = value.compactMap({ dictionary in
+                guard let conversationId = dictionary["id"] as? String,
+                    let otherUsers = dictionary["other_users"] as? [[String:Any]],
+                    let lastestMessage = dictionary["latest_message"] as? [String:Any],
+                    let date = lastestMessage["date"] as? String,
+                    let message = lastestMessage["message"] as? String,
+                    let isRead = lastestMessage["is_read"] as? Bool else {
+                        return nil
+                }
+                let lastestMessageObject = LatestMessage(date: date, text: message, read: isRead)
+                
+                var otherMembers = [SearchResult]()
+                for user in otherUsers {
+                    otherMembers.append(SearchResult(name: user["name"] as! String, email: user["email"] as! String))
+                }
+                
+                return Conversation(id: conversationId, otherUsers: otherMembers, isGroupChat: true, latestMessage: lastestMessageObject)
+            })
+        })
+        
         database.child("\(email)/conversations").observe(.value, with: { snapshot in
             guard let value = snapshot.value as? [[String:Any]] else {
                 completion(.failure(DatabaseError.failedToFetch))
@@ -301,9 +328,9 @@ extension DatabaseManager {
                         return nil
                 }
                 let lastestMessageObject = LatestMessage(date: date, text: message, read: isRead)
-                return Conversation(id: conversationId, name: name, otherUserEmail: otherUserEmail, latestMessage: lastestMessageObject)
+                return Conversation(id: conversationId, otherUsers: [SearchResult(name: name, email: otherUserEmail)],isGroupChat: false, latestMessage: lastestMessageObject)
             })
-            completion (.success(conversations))
+            completion (.success(groupChats + conversations))
         })
     }
     
@@ -619,6 +646,393 @@ extension DatabaseManager {
     }
 }
 
+// MARK: - Group Chat Messages
+/*
+ group_chats: {
+    id: {
+        members: {
+        }
+        messages: {
+        }
+    }
+ }
+ */
+extension DatabaseManager {
+    public func groupChatExists(id: String, completion: @escaping (Result<String, Error>) -> Void) {
+        database.child("group_chats/\(id)").observeSingleEvent(of: .value, with: { snapshot in
+            guard snapshot.value as? [[String: Any]] != nil else{
+                completion(.failure(DatabaseError.failedToFetch))
+                return
+            }
+            completion(.success(id))
+            return
+        })
+    }
+    
+    public func createNewGroupChat(with otherUsers: [SearchResult], groupChatName: String, firstMessage: Message, completion: @escaping (Result<String, Error>) -> Void) {
+        guard let currentEmail = UserDefaults.standard.value(forKey: "email") as? String,
+            let currentName = UserDefaults.standard.value(forKey: "name") as? String else {
+                return
+        }
+        let safeEmail = DatabaseManager.safeEmail(emailAddress: currentEmail)
+        
+        let ref = database.child("\(safeEmail)")
+        ref.observeSingleEvent(of: .value, with: { [weak self] snapshot in
+            guard var userNode = snapshot.value as? [String:Any] else {
+                completion(.failure(DatabaseError.failedToFetch))
+                print("User not found")
+                return
+            }
+            
+            let messageDate = firstMessage.sentDate
+            let dateString = ChatViewController.dateFormatter.string(from: messageDate)
+            
+            var message = ""
+            
+            switch firstMessage.kind {
+            case .text(let messageText):
+                message = messageText
+            case .attributedText(_):
+                break
+            case .photo(_):
+                break
+            case .video(_):
+                break
+            case .location(_):
+                break
+            case .emoji(_):
+                break
+            case .audio(_):
+                break
+            case .contact(_):
+                break
+            case .custom(_):
+                break
+            }
+            
+            let groupChatId = groupChatName
+            
+            var otherMembers = [[String:Any]]()
+            
+            for user in otherUsers {
+                otherMembers.append(["name": user.name, "email": user.email])
+            }
+            
+            let newGroupChatData: [String: Any] = [
+                "id": groupChatId,
+                "other_users": otherMembers,
+                "latest_message": [
+                    "date": dateString,
+                    "is_read": false,
+                    "message": message
+                ],
+            ]
+            
+            otherMembers.append(["name": currentName, "email": safeEmail])
+            for user in otherUsers {
+                otherMembers.removeAll(where: {
+                    $0["email"] as? String == user.email
+                })
+                let recipientNewGroupChatData: [String: Any] = [
+                    "id": groupChatId,
+                    "other_users": otherMembers,
+                    "latest_message": [
+                        "date": dateString,
+                        "is_read": false,
+                        "message": message
+                    ],
+                ]
+                // Update recipient conversation entry
+                self?.database.child("\(user.email)/group_chats").observeSingleEvent(of: .value, with: { [weak self] snapshot in
+                    if var groupChats = snapshot.value as? [[String: Any]] {
+                        groupChats.append(recipientNewGroupChatData)
+                        self?.database.child("\(user.email)/group_chats").setValue(groupChats)
+                    }
+                    else {
+                        self?.database.child("\(user.email)/group_chats").setValue([recipientNewGroupChatData])
+                    }
+                })
+                otherMembers.append(["name": user.name, "email": user.email])
+            }
+            
+            
+            // Update current user conversation entry
+            var memberEmails = [String]()
+            for user in otherUsers {
+                memberEmails.append(user.email)
+            }
+            memberEmails.append(safeEmail)
+            if var groupChats = userNode["group_chats"] as? [[String: Any]] {
+                //conversation array exists for current user, append messages
+                groupChats.append(newGroupChatData)
+                userNode["group_chats"] = groupChats
+                ref.setValue(userNode, withCompletionBlock: { error, _ in
+                    guard error==nil else {
+                        completion(.failure(DatabaseError.failedToFetch))
+                        return
+                    }
+                    self?.finishCreatingGroupChat(groupChatId: groupChatId, members: memberEmails, firstMessage: firstMessage, completion: completion)
+                })
+            }
+            else {
+                //conversation array does not exists
+                userNode["group_chats"] = [newGroupChatData]
+                ref.setValue(userNode, withCompletionBlock: { error, _ in
+                    guard error==nil else {
+                        completion(.failure(DatabaseError.failedToFetch))
+                        return
+                    }
+                    self?.finishCreatingGroupChat(groupChatId: groupChatId, members: memberEmails, firstMessage: firstMessage, completion: completion)
+                })
+            }
+        })
+    }
+    
+    private func finishCreatingGroupChat (groupChatId: String, members: [String], firstMessage: Message, completion: @escaping (Result<String, Error>) -> Void) {
+        var message = ""
+        
+        switch firstMessage.kind {
+        case .text(let messageText):
+            message = messageText
+        case .attributedText(_):
+            break
+        case .photo(_):
+            break
+        case .video(_):
+            break
+        case .location(_):
+            break
+        case .emoji(_):
+            break
+        case .audio(_):
+            break
+        case .contact(_):
+            break
+        case .custom(_):
+            break
+        }
+        
+        let messageDate = firstMessage.sentDate
+        let dateString = ChatViewController.dateFormatter.string(from: messageDate)
+        
+        guard let myEmail = UserDefaults.standard.value(forKey: "email") as? String else {
+            completion(.failure(DatabaseError.failedToFetch))
+            return
+        }
+        let currentUserEmail = DatabaseManager.safeEmail(emailAddress: myEmail)
+        
+        let collectionMessage: [String: Any] = [
+            "name": "poopie",
+            "id": firstMessage.messageId,
+            "type": firstMessage.kind.messageKindString,
+            "content": message,
+            "date": dateString,
+            "sender_email": currentUserEmail,
+            "is_read": false
+        ]
+        
+        let value: [String: Any] = [
+            "messages": [collectionMessage],
+            "members": members
+        ]
+        
+        print ("adding group chat: \(groupChatId)")
+        
+        database.child("group_chats/\(groupChatId)").setValue(value, withCompletionBlock: { error, _ in
+            guard error == nil else {
+                completion(.failure(DatabaseError.failedToFetch))
+                return
+            }
+            completion (.success(groupChatId))
+        })
+    }
+    
+    public func sendGroupChatMessage(to conversation: String, otherUserEmails: [String], newMessage: Message, completion: @escaping (Bool) -> Void) {
+        // add new message to messages
+        // update sender latest message
+        // update recipient latest message
+        guard let myEmail = UserDefaults.standard.value(forKey: "email") as? String else {
+            completion (false)
+            return
+        }
+        
+        let currentUserEmail = DatabaseManager.safeEmail(emailAddress: myEmail)
+        
+        database.child("\(conversation)/messages").observeSingleEvent(of: .value, with: { [weak self] snapshot in
+            guard let strongSelf = self else{
+                return
+            }
+            
+            guard var currentMessages = snapshot.value as? [[String: Any]] else {
+                completion(false)
+                return
+            }
+            let messageDate = newMessage.sentDate
+            let dateString = ChatViewController.dateFormatter.string(from: messageDate)
+            
+            var message = ""
+            
+            switch newMessage.kind {
+            case .text(let messageText):
+                message = messageText
+            case .attributedText(_):
+                break
+            case .photo(let mediaItem):
+                if let targetUrlString = mediaItem.url?.absoluteString {
+                    message = targetUrlString
+                }
+                break
+            case .video(let mediaItem):
+                if let targetUrlString = mediaItem.url?.absoluteString {
+                    message = targetUrlString
+                }
+                break
+            case .location(_):
+                break
+            case .emoji(_):
+                break
+            case .audio(_):
+                break
+            case .contact(_):
+                break
+            case .custom(_):
+                break
+            }
+            
+            let newMessageEntry: [String: Any] = [
+                "name": "poopie",
+                "id": newMessage.messageId,
+                "type": newMessage.kind.messageKindString,
+                "content": message,
+                "date": dateString,
+                "sender_email": currentUserEmail,
+                "is_read": false
+            ]
+            
+            currentMessages.append(newMessageEntry)
+            strongSelf.database.child("\(conversation)/messages").setValue(currentMessages) { error, _ in
+                guard error == nil else {
+                    completion(false)
+                    return
+                }
+                
+                strongSelf.database.child("\(currentUserEmail)/group_chats").observeSingleEvent(of: .value, with: { snapshot in
+                    var databaseEntryConversations = [[String: Any]]()
+                    let updatedValue: [String: Any] = [
+                        "date": dateString,
+                        "is_read": false,
+                        "message": message,
+                    ]
+                    
+                    var memberEmails = [String]()
+                    
+                    for email in otherUserEmails {
+                        memberEmails.append(email)
+                    }
+                    
+                    if var currentUserConversations = snapshot.value as? [[String: Any]] {
+                        var position = 0
+                        var found = false
+                        for var convo in currentUserConversations {
+                            if let currentId = convo["id"] as? String, currentId == conversation {
+                                convo["latest_message"] = updatedValue
+                                currentUserConversations[position] = convo
+                                found = true
+                                break
+                            }
+                            position+=1
+                        }
+                        if !found {
+                            let newConversationData: [String: Any] = [
+                                "id": conversation,
+                                "other_users": memberEmails,
+                                "latest_message": updatedValue,
+                            ]
+                            currentUserConversations.append(newConversationData)
+                        }
+                        databaseEntryConversations = currentUserConversations
+                    }
+                    else {
+                        let newConversationData: [String: Any] = [
+                            "id": conversation,
+                            "other_users": memberEmails,
+                            "latest_message": updatedValue,
+                        ]
+                        databaseEntryConversations = [
+                            newConversationData
+                        ]
+                    }
+                    
+                    
+                    strongSelf.database.child("\(currentUserEmail)/group_chats").setValue(databaseEntryConversations, withCompletionBlock: { error, _ in
+                        guard error == nil else {
+                            completion(false)
+                            return
+                        }
+                        
+                        memberEmails.append(currentUserEmail)
+                        // Update latest message for recipient user
+                        for otherUserEmail in otherUserEmails {
+                            memberEmails.removeAll(where: {
+                                $0 == otherUserEmail
+                            })
+                            strongSelf.database.child("\(otherUserEmail)/group_chats").observeSingleEvent(of: .value, with: { snapshot in
+                                var databaseEntryConversations = [[String: Any]]()
+                                
+                                let updatedValue: [String: Any] = [
+                                    "date": dateString,
+                                    "is_read": false,
+                                    "message": message,
+                                ]
+                                if var otherUserConversations = snapshot.value as? [[String: Any]] {
+                                    var position = 0
+                                    var found = false
+                                    for var convo in otherUserConversations {
+                                        if let currentId = convo["id"] as? String, currentId == conversation {
+                                            convo["latest_message"] = updatedValue
+                                            otherUserConversations[position] = convo
+                                            found = true
+                                        }
+                                        position+=1
+                                    }
+                                    if !found {
+                                        let newConversationData: [String: Any] = [
+                                            "id": conversation,
+                                            "other_users": memberEmails,
+                                            "latest_message": updatedValue,
+                                        ]
+                                        otherUserConversations.append(newConversationData)
+                                    }
+                                    databaseEntryConversations = otherUserConversations
+                                }
+                                else {
+                                    let newConversationData: [String: Any] = [
+                                        "id": conversation,
+                                        "other_users": memberEmails,
+                                        "latest_message": updatedValue,
+                                    ]
+                                    databaseEntryConversations = [
+                                        newConversationData
+                                    ]
+                                }
+                                
+                                strongSelf.database.child("\(otherUserEmail)/group_chats").setValue(databaseEntryConversations, withCompletionBlock: { error, _ in
+                                    guard error == nil else {
+                                        completion(false)
+                                        return
+                                    }
+                                    completion (true)
+                                })
+                            })
+                        }
+                    })
+                    
+                })
+            }
+            
+        })
+    }
+}
 
 
 

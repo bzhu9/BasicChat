@@ -62,10 +62,17 @@ class ConversationTableViewCell: UITableViewCell {
                                         height: (contentView.height - 20)/2)
     }
     public func configure (with model: Conversation) {
-        self.userNameLabel.text = model.name
+        var path: String
+        if model.isGroupChat{
+            self.userNameLabel.text = model.id
+            path = "images/\(model.otherUsers[0].email)_profile_picture.png"
+        }
+        else {
+            self.userNameLabel.text = model.otherUsers[0].name
+            path = "images/\(model.otherUsers[0].email)_profile_picture.png"
+        }
         self.userMessageLabel.text = model.latestMessage.text
         
-        let path = "images/\(model.otherUserEmail)_profile_picture.png"
         StorageManager.shared.downloadURL(for: path, completion: { [weak self] result in
             switch result{
             case .success(let url):

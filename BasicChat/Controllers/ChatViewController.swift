@@ -71,9 +71,10 @@ class ChatViewController: MessagesViewController {
         return formatter
     }()
     
-    public let otherUserEmail: String
-    private let conversationId: String?
+    public let otherUsers: [SearchResult]
+    private var chatId: String?
     public var isNewConversation = false
+    public var isGroupChat: Bool
     
     private var messages = [Message]()
     
@@ -86,9 +87,21 @@ class ChatViewController: MessagesViewController {
         return Sender(photoURL: "", senderId: safeEmail, displayName: "Joe Smith")
     }
     
-    init(with email: String, id: String?) {
-        self.otherUserEmail = email
-        self.conversationId = id
+    init(users: [SearchResult], id: String?, isGroupChat: Bool) {
+        self.otherUsers = users
+        print ("hi")
+        if id != nil {
+            if isGroupChat {
+                self.chatId = "group_chats/\(id!)"
+            }
+            else {
+                self.chatId = id
+            }
+        }
+        else {
+            self.chatId = id
+        }
+        self.isGroupChat = isGroupChat
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -196,7 +209,8 @@ class ChatViewController: MessagesViewController {
         present(actionSheet, animated: true)
     }
     
-    private func listenforMessages(id: String, shouldScrollToBottom: Bool) {
+    // Group Chat needs changes
+    private func listenforConversationMessages(id: String, shouldScrollToBottom: Bool) {
         DatabaseManager.shared.getAllMessagesForConversation(with: id, completion: { [weak self] result in
             switch result {
             case .success(let messages):
@@ -220,8 +234,8 @@ class ChatViewController: MessagesViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         messageInputBar.inputTextView.becomeFirstResponder()
-        if let conversationId = conversationId {
-            listenforMessages(id: conversationId, shouldScrollToBottom: true)
+        if let chatId = chatId {
+            listenforConversationMessages(id: chatId, shouldScrollToBottom: true)
         }
     }
 }
@@ -234,7 +248,7 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true, completion: nil)
         guard let messageId = createMessageId(),
-            let conversationId = conversationId,
+            let chatId = chatId,
             let selfSender = selfSender,
             let name = self.title else {
                 return
@@ -266,14 +280,31 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
                                           sentDate: Date(),
                                           kind: .photo(media))
                     
-                    DatabaseManager.shared.sendMessage(to: conversationId, otherUserEmail: strongSelf.otherUserEmail, name: name, newMessage: message, completion: { success in
-                        if success {
-                            print ("Sent photo message")
-                        }
-                        else {
-                            print ("Failed to send photo message")
-                        }
-                    })
+                    //CHANGE
+                    var otherUserEmails = [String]()
+                    for user in strongSelf.otherUsers {
+                        otherUserEmails.append(user.email)
+                    }
+                    if strongSelf.isGroupChat {
+                        DatabaseManager.shared.sendGroupChatMessage(to: chatId, otherUserEmails: otherUserEmails, newMessage: message, completion: { success in
+                            if success {
+                                print ("Sent video message")
+                            }
+                            else {
+                                print ("Failed to send video message")
+                            }
+                        })
+                    }
+                    else {
+                        DatabaseManager.shared.sendMessage(to: chatId, otherUserEmail: otherUserEmails[0], name: name, newMessage: message, completion: { success in
+                            if success {
+                                print ("Sent video message")
+                            }
+                            else {
+                                print ("Failed to send video message")
+                            }
+                        })
+                    }
                 
                 case .failure(let error):
                     print ("message photo upload error: \(error)")
@@ -306,15 +337,31 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
                                           sentDate: Date(),
                                           kind: .video(media))
                     
-                    DatabaseManager.shared.sendMessage(to: conversationId, otherUserEmail: strongSelf.otherUserEmail, name: name, newMessage: message, completion: { success in
-                        if success {
-                            print ("Sent video message")
-                        }
-                        else {
-                            print ("Failed to send video message")
-                        }
-                    })
-                
+                    //CHANGE
+                    var otherUserEmails = [String]()
+                    for user in strongSelf.otherUsers {
+                        otherUserEmails.append(user.email)
+                    }
+                    if strongSelf.isGroupChat {
+                        DatabaseManager.shared.sendGroupChatMessage(to: chatId, otherUserEmails: otherUserEmails, newMessage: message, completion: { success in
+                            if success {
+                                print ("Sent video message")
+                            }
+                            else {
+                                print ("Failed to send video message")
+                            }
+                        })
+                    }
+                    else {
+                        DatabaseManager.shared.sendMessage(to: chatId, otherUserEmail: otherUserEmails[0], name: name, newMessage: message, completion: { success in
+                            if success {
+                                print ("Sent video message")
+                            }
+                            else {
+                                print ("Failed to send video message")
+                            }
+                        })
+                    }
                 case .failure(let error):
                     print ("Message video upload error: \(error)")
                 }
@@ -342,36 +389,92 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
         //Send Message
         if isNewConversation {
             //create convo in database
-            DatabaseManager.shared.createNewConversation(with: otherUserEmail, name: self.title ?? "User", firstMessage: message, completion: { [weak self] success in
-                if success {
-                    print ("Message Sent")
-                    self?.isNewConversation = false
-                    self?.messageInputBar.inputTextView.text = nil
+            //CHANGE
+            if isGroupChat {
+                print ("we are right here")
+                guard let groupChatName = self.title else {
+                    return
                 }
-                else {
-                    print("Failed to send")
-                }
-            })
+                print ("now here")
+                DatabaseManager.shared.createNewGroupChat(with: otherUsers, groupChatName: groupChatName, firstMessage: message, completion: { [weak self] result in
+                    switch result {
+                    case .success(let id):
+                        print ("Message Sent")
+                        self?.isNewConversation = false
+                        guard let isGroupChat = self?.isGroupChat else {
+                            return
+                        }
+                        if isGroupChat {
+                            self?.chatId = "group_chats/\(id)"
+                        }
+                        else {
+                            self?.chatId = id
+                        }
+                        self?.messageInputBar.inputTextView.text = nil
+                    case .failure(_):
+                        print("Failed to send")
+                    }
+                })
+            }
+            else {
+                print ("we are right here now")
+                DatabaseManager.shared.createNewConversation(with: self.otherUsers[0].email, name: self.title ?? "User", firstMessage: message, completion: { [weak self] result in
+                    switch result {
+                    case .success(let id):
+                        print ("Message Sent")
+                        self?.isNewConversation = false
+                        guard let isGroupChat = self?.isGroupChat else {
+                            return
+                        }
+                        if isGroupChat {
+                            self?.chatId = "group_chats/\(id)"
+                        }
+                        else {
+                            self?.chatId = id
+                        }
+                        self?.messageInputBar.inputTextView.text = nil
+                    case .failure(_):
+                        print("Failed to send")
+                    }
+                })
+            }
         }
         else {
-            guard let conversationId = conversationId, let name = self.title else {
+            guard let chatId = chatId, let name = self.title else {
                 return
             }
             
             //append to existing conversation data
-            DatabaseManager.shared.sendMessage(to: conversationId, otherUserEmail: otherUserEmail, name: name, newMessage: message, completion: { [weak self] success in
-                if success {
-                    print("Message Sent")
-                    self?.messageInputBar.inputTextView.text = nil
-                }
-                else {
-                    print("Failed to send")
-                }
-            })
+            //CHANGE
+            var otherUserEmails = [String]()
+            for user in otherUsers {
+                otherUserEmails.append(user.email)
+            }
+            if self.isGroupChat {
+                DatabaseManager.shared.sendGroupChatMessage(to: chatId, otherUserEmails: otherUserEmails, newMessage: message, completion: { success in
+                    if success {
+                        print ("Sent video message")
+                    }
+                    else {
+                        print ("Failed to send video message")
+                    }
+                })
+            }
+            else {
+                DatabaseManager.shared.sendMessage(to: chatId, otherUserEmail: otherUserEmails[0], name: name, newMessage: message, completion: { success in
+                    if success {
+                        print ("Sent video message")
+                    }
+                    else {
+                        print ("Failed to send video message")
+                    }
+                })
+            }
             
         }
     }
     
+    //CHANGE
     private func createMessageId() -> String? {
         //date, otherUserEmail, senderEmail
         guard let myEmail = UserDefaults.standard.value(forKey: "email") as? String else {
@@ -382,8 +485,14 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
         
         let dateString = Self.dateFormatter.string(from: Date())
         
-        let newIdentifier = "\(otherUserEmail)_\(currentUserEmail)_\(dateString)"
-        
+        var newIdentifier = ""
+        if isGroupChat {
+            let groupName = self.title
+            newIdentifier = "\(groupName ?? "group")_\(dateString)"
+        }
+        else {
+            newIdentifier = "\(otherUsers[0].email)_\(currentUserEmail)_\(dateString)"
+        }
         print("created message id: \(newIdentifier)")
         
         return newIdentifier
