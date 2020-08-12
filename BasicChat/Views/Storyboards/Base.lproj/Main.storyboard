@@ -46,7 +46,7 @@
         <scene sceneID="rUj-9P-Ot4">
             <objects>
                 <navigationController id="zcT-5H-k0F" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Profile" id="kQV-V4-ztF"/>
+                    <tabBarItem key="tabBarItem" title="Profile" image="person.circle" catalog="system" id="kQV-V4-ztF"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="V1K-WD-Wfp">
                         <rect key="frame" x="0.0" y="44" width="414" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -63,7 +63,7 @@
         <scene sceneID="YUO-uy-Gay">
             <objects>
                 <navigationController id="K8m-at-2Vb" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Announcements" id="Gnv-Km-BPU"/>
+                    <tabBarItem key="tabBarItem" title="Announcements" image="book" catalog="system" id="Gnv-Km-BPU"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="ESS-Xe-BM9">
                         <rect key="frame" x="0.0" y="44" width="414" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -127,7 +127,7 @@
         <scene sceneID="QTh-wW-KRD">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="yVS-gG-tOD" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Chats" id="0xe-zj-c2R"/>
+                    <tabBarItem key="tabBarItem" title="Chats" image="message" catalog="system" id="0xe-zj-c2R"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="PJ1-eN-skU">
                         <rect key="frame" x="0.0" y="44" width="414" height="96"/>
@@ -143,4 +143,9 @@
             <point key="canvasLocation" x="137.68115942028987" y="103.79464285714285"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="book" catalog="system" width="128" height="101"/>
+        <image name="message" catalog="system" width="128" height="113"/>
+        <image name="person.circle" catalog="system" width="128" height="121"/>
+    </resources>
 </document>
