@@ -288,20 +288,20 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
                     if strongSelf.isGroupChat {
                         DatabaseManager.shared.sendGroupChatMessage(to: chatId, otherUserEmails: otherUserEmails, newMessage: message, completion: { success in
                             if success {
-                                print ("Sent video message")
+                                print ("Sent photo message")
                             }
                             else {
-                                print ("Failed to send video message")
+                                print ("Failed to send photo message")
                             }
                         })
                     }
                     else {
                         DatabaseManager.shared.sendMessage(to: chatId, otherUserEmail: otherUserEmails[0], name: name, newMessage: message, completion: { success in
                             if success {
-                                print ("Sent video message")
+                                print ("Sent photo message")
                             }
                             else {
-                                print ("Failed to send video message")
+                                print ("Failed to send photo message")
                             }
                         })
                     }
@@ -391,25 +391,15 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
             //create convo in database
             //CHANGE
             if isGroupChat {
-                print ("we are right here")
                 guard let groupChatName = self.title else {
                     return
                 }
-                print ("now here")
                 DatabaseManager.shared.createNewGroupChat(with: otherUsers, groupChatName: groupChatName, firstMessage: message, completion: { [weak self] result in
                     switch result {
                     case .success(let id):
                         print ("Message Sent")
                         self?.isNewConversation = false
-                        guard let isGroupChat = self?.isGroupChat else {
-                            return
-                        }
-                        if isGroupChat {
-                            self?.chatId = "group_chats/\(id)"
-                        }
-                        else {
-                            self?.chatId = id
-                        }
+                        self?.chatId = "group_chats/\(id)"
                         self?.messageInputBar.inputTextView.text = nil
                     case .failure(_):
                         print("Failed to send")
@@ -417,21 +407,12 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
                 })
             }
             else {
-                print ("we are right here now")
                 DatabaseManager.shared.createNewConversation(with: self.otherUsers[0].email, name: self.title ?? "User", firstMessage: message, completion: { [weak self] result in
                     switch result {
                     case .success(let id):
                         print ("Message Sent")
                         self?.isNewConversation = false
-                        guard let isGroupChat = self?.isGroupChat else {
-                            return
-                        }
-                        if isGroupChat {
-                            self?.chatId = "group_chats/\(id)"
-                        }
-                        else {
-                            self?.chatId = id
-                        }
+                        self?.chatId = id
                         self?.messageInputBar.inputTextView.text = nil
                     case .failure(_):
                         print("Failed to send")
@@ -440,9 +421,11 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
             }
         }
         else {
+            //not a new conversation
             guard let chatId = chatId, let name = self.title else {
                 return
             }
+            print (chatId)
             
             //append to existing conversation data
             //CHANGE
@@ -450,23 +433,26 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
             for user in otherUsers {
                 otherUserEmails.append(user.email)
             }
-            if self.isGroupChat {
-                DatabaseManager.shared.sendGroupChatMessage(to: chatId, otherUserEmails: otherUserEmails, newMessage: message, completion: { success in
+            if isGroupChat {
+                print ("is this called twice?")
+                DatabaseManager.shared.sendGroupChatMessage(to: chatId, otherUserEmails: otherUserEmails, newMessage: message, completion: { [weak self] success in
                     if success {
-                        print ("Sent video message")
+                        print ("Sent message")
+                        self?.messageInputBar.inputTextView.text = nil
                     }
                     else {
-                        print ("Failed to send video message")
+                        print ("Failed to send message")
                     }
                 })
             }
             else {
-                DatabaseManager.shared.sendMessage(to: chatId, otherUserEmail: otherUserEmails[0], name: name, newMessage: message, completion: { success in
+                DatabaseManager.shared.sendMessage(to: chatId, otherUserEmail: otherUserEmails[0], name: name, newMessage: message, completion: { [weak self] success in
                     if success {
-                        print ("Sent video message")
+                        print ("Sent message")
+                        self?.messageInputBar.inputTextView.text = nil
                     }
                     else {
-                        print ("Failed to send video message")
+                        print ("Failed to send message")
                     }
                 })
             }

@@ -116,15 +116,27 @@ class ConversationsViewController: UIViewController {
                 guard !conversations.isEmpty else {
                     return
                 }
-                let sortedConversations = conversations.sorted(by: {(lhs:Conversation,rhs:Conversation) -> Bool in
-                    return lhs > rhs
-                } )
-                self?.conversations = sortedConversations
-                
-                DispatchQueue.main.async {
-                    self?.tableView.reloadData()
-                }
-                
+                DatabaseManager.shared.getAllGroupChats(for: safeEmail, completion: { [weak self] newResult in
+                    switch newResult {
+                    case .success(let groupChats):
+                        print ("Successfully got conversation models")
+                        guard !groupChats.isEmpty else {
+                            return
+                        }
+                        
+                        let sortedConversations = (conversations+groupChats).sorted(by: {(lhs:Conversation,rhs:Conversation) -> Bool in
+                            return lhs > rhs
+                        } )
+                        self?.conversations = sortedConversations
+                        
+                        DispatchQueue.main.async {
+                            self?.tableView.reloadData()
+                        }
+                        
+                    case .failure(let error):
+                        print("Failed to get group chats: \(error)")
+                    }
+                })
             case .failure(let error):
                 print("Failed to get conversations: \(error)")
             }
