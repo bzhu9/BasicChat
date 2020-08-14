@@ -87,6 +87,7 @@ class ConversationsViewController: UIViewController {
         setupTableView()
         fetchConversations()
         startListeningForConversations()
+        startListeningForGroupChats ()
         
         loginObserver = NotificationCenter.default.addObserver(forName: .didLogInNotification ,object: nil,queue: .main, using: { [weak self] _ in
             guard let strongSelf = self else {
@@ -94,6 +95,7 @@ class ConversationsViewController: UIViewController {
             }
             
             strongSelf.startListeningForConversations()
+            strongSelf.startListeningForGroupChats ()
         })
     }
     
@@ -110,38 +112,88 @@ class ConversationsViewController: UIViewController {
         
         let safeEmail = DatabaseManager.safeEmail(emailAddress: email)
         DatabaseManager.shared.getAllConversations(for: safeEmail, completion: { [weak self] result in
+            guard let strongSelf = self else {
+                return
+            }
             switch result {
             case .success(let conversations):
                 print ("Successfully got conversation models")
-                guard !conversations.isEmpty else {
-                    return
-                }
-                DatabaseManager.shared.getAllGroupChats(for: safeEmail, completion: { [weak self] newResult in
-                    switch newResult {
-                    case .success(let groupChats):
-                        print ("Successfully got conversation models")
-                        guard !groupChats.isEmpty else {
+                var groupChats = [Conversation]()
+                DatabaseManager.shared.getCurrentGroupChats(for: safeEmail, completion: { secondResult in
+                    switch secondResult {
+                    case .success(let gc):
+                        groupChats = gc
+                        guard !conversations.isEmpty else {
                             return
                         }
-                        
                         let sortedConversations = (conversations+groupChats).sorted(by: {(lhs:Conversation,rhs:Conversation) -> Bool in
                             return lhs > rhs
-                        } )
-                        self?.conversations = sortedConversations
+                        })
+                        
+                        strongSelf.conversations = sortedConversations
                         
                         DispatchQueue.main.async {
-                            self?.tableView.reloadData()
+                            strongSelf.tableView.reloadData()
                         }
-                        
                     case .failure(let error):
                         print("Failed to get group chats: \(error)")
                     }
+                    
                 })
             case .failure(let error):
                 print("Failed to get conversations: \(error)")
             }
         })
     }
+    
+    private func startListeningForGroupChats () {
+        guard let email = UserDefaults.standard.value(forKey: "email") as? String else {
+            return
+        }
+        
+        if let observer = loginObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
+        
+        print ("Starting groupChat fetch...")
+        
+        let safeEmail = DatabaseManager.safeEmail(emailAddress: email)
+        DatabaseManager.shared.getAllGroupChats(for: safeEmail, completion: { [weak self] result in
+            guard let strongSelf = self else {
+                return
+            }
+            switch result {
+            case .success(let groupChats):
+                print ("Successfully got group chat models")
+                var conversations = [Conversation]()
+                DatabaseManager.shared.getCurrentConversations(for: safeEmail, completion: { secondResult in
+                    switch secondResult {
+                    case .success(let convos):
+                        conversations = convos
+                        guard !groupChats.isEmpty else {
+                            return
+                        }
+                        print(conversations+groupChats)
+                        let sortedConversations = (conversations+groupChats).sorted(by: {(lhs:Conversation,rhs:Conversation) -> Bool in
+                            return lhs > rhs
+                        })
+                        
+                        strongSelf.conversations = sortedConversations
+                        
+                        DispatchQueue.main.async {
+                            strongSelf.tableView.reloadData()
+                        }
+                    case .failure(let error):
+                        print("Failed to get conversations: \(error)")
+                    }
+                    
+                })
+            case .failure(let error):
+                print("Failed to get group chats: \(error)")
+            }
+        })
+    }
+    
     
     @objc private func didTapComposeButton() {
         let vc = NewConversationViewController()

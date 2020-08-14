@@ -308,6 +308,37 @@ extension DatabaseManager {
         })
     }
     
+    public func getCurrentConversations (for email: String, completion: @escaping (Result<[Conversation], Error>) -> Void ) {
+        var conversations = [Conversation]()
+        hasConversations(for: email, completion: { [weak self] success in
+            guard let strongSelf = self else {
+                return
+            }
+            if success {
+                strongSelf.database.child("\(email)/conversations").observeSingleEvent(of: .value, with: { secondSnapshot in
+                    guard let secondValue = secondSnapshot.value as? [[String:Any]] else {
+                        completion(.failure(DatabaseError.failedToFetch))
+                        return
+                    }
+                    conversations = secondValue.compactMap({ dictionary in
+                        guard let conversationId = dictionary["id"] as? String,
+                            let name = dictionary["name"] as? String,
+                            let otherUserEmail = dictionary["other_user_email"] as? String,
+                            let lastestMessage = dictionary["latest_message"] as? [String:Any],
+                            let date = lastestMessage["date"] as? String,
+                            let message = lastestMessage["message"] as? String,
+                            let isRead = lastestMessage["is_read"] as? Bool else {
+                                return nil
+                        }
+                        let lastestMessageObject = LatestMessage(date: date, text: message, read: isRead)
+                        return Conversation(id: conversationId, otherUsers: [SearchResult(name: name, email: otherUserEmail)],isGroupChat: false, latestMessage: lastestMessageObject)
+                    })
+                    completion (.success(conversations))
+                })
+            }
+        })
+    }
+    
     ///Gets all messages for a given conversation
     public func getAllMessagesForConversation(with id: String, completion: @escaping (Result<[Message], Error>) -> Void) {
         database.child("\(id)/messages").observe(.value, with: { snapshot in
@@ -1032,6 +1063,59 @@ extension DatabaseManager {
                 return Conversation(id: conversationId, otherUsers: otherMembers, isGroupChat: true, latestMessage: lastestMessageObject)
             })
             completion (.success(groupChats))
+        })
+    }
+    
+    public func getCurrentGroupChats (for email: String, completion: @escaping (Result<[Conversation], Error>) -> Void ) {
+        var groupChats = [Conversation]()
+        hasGroupChats(for: email, completion: { [weak self] success in
+            guard let strongSelf = self else {
+                return
+            }
+            if success {
+                strongSelf.database.child("\(email)/group_chats").observeSingleEvent(of: .value, with: { secondSnapshot in
+                    guard let secondValue = secondSnapshot.value as? [[String:Any]] else {
+                        completion(.failure(DatabaseError.failedToFetch))
+                        return
+                    }
+                    groupChats = secondValue.compactMap({ dictionary in
+                        guard let conversationId = dictionary["id"] as? String,
+                            let otherUsers = dictionary["other_users"] as? [[String:Any]],
+                            let lastestMessage = dictionary["latest_message"] as? [String:Any],
+                            let date = lastestMessage["date"] as? String,
+                            let message = lastestMessage["message"] as? String,
+                            let isRead = lastestMessage["is_read"] as? Bool else {
+                                return nil
+                        }
+                        var otherMembers = [SearchResult]()
+                        for user in otherUsers {
+                            otherMembers.append(SearchResult(name: user["name"] as! String, email: user["email"] as! String))
+                        }
+                        let lastestMessageObject = LatestMessage(date: date, text: message, read: isRead)
+                         return Conversation(id: conversationId, otherUsers: otherMembers, isGroupChat: true, latestMessage: lastestMessageObject)
+                    })
+                    completion (.success(groupChats))
+                })
+            }
+        })
+    }
+    public func hasConversations (for email: String, completion: @escaping (Bool) -> Void) {
+        database.child("\(email)/conversations").observeSingleEvent(of: .value, with: {snapshot in
+            if snapshot.value as? [[String:Any]] != nil {
+                completion(true)
+                return
+            }
+            completion(false)
+        })
+    }
+    
+    public func hasGroupChats (for email: String, completion: @escaping (Bool) -> Void) {
+        database.child("\(email)/group_chats").observeSingleEvent(of: .value, with: {snapshot in
+            if snapshot.value as? [[String:Any]] != nil {
+                completion(true)
+                return
+            }
+            completion(false)
         })
     }
 }
