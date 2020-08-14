@@ -524,6 +524,13 @@ extension ChatViewController: MessagesDataSource, MessagesLayoutDelegate, Messag
     }
     
     func messageTopLabelHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+        guard let email = UserDefaults.standard.value(forKey: "email") as? String else {
+                return 0
+        }
+        let safeEmail = DatabaseManager.safeEmail(emailAddress: email)
+        if message.sender.senderId == safeEmail {
+            return 0
+        }
         return 20
     }
     
