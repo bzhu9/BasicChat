@@ -823,14 +823,15 @@ extension DatabaseManager {
         let messageDate = firstMessage.sentDate
         let dateString = ChatViewController.dateFormatter.string(from: messageDate)
         
-        guard let myEmail = UserDefaults.standard.value(forKey: "email") as? String else {
-            completion(.failure(DatabaseError.failedToFetch))
-            return
+        guard let myEmail = UserDefaults.standard.value(forKey: "email") as? String,
+            let currentName = UserDefaults.standard.value(forKey: "name") as? String else {
+                completion(.failure(DatabaseError.failedToFetch))
+                return
         }
         let currentUserEmail = DatabaseManager.safeEmail(emailAddress: myEmail)
         
         let collectionMessage: [String: Any] = [
-            "name": "poopie",
+            "name": currentName,
             "id": firstMessage.messageId,
             "type": firstMessage.kind.messageKindString,
             "content": message,
@@ -859,9 +860,10 @@ extension DatabaseManager {
         // add new message to messages
         // update sender latest message
         // update recipient latest message
-        guard let myEmail = UserDefaults.standard.value(forKey: "email") as? String else {
-            completion (false)
-            return
+        guard let myEmail = UserDefaults.standard.value(forKey: "email") as? String,
+            let currentName = UserDefaults.standard.value(forKey: "name") as? String else {
+                completion (false)
+                return
         }
         
         let currentUserEmail = DatabaseManager.safeEmail(emailAddress: myEmail)
@@ -908,7 +910,7 @@ extension DatabaseManager {
             }
             
             let newMessageEntry: [String: Any] = [
-                "name": "poopie",
+                "name": currentName,
                 "id": newMessage.messageId,
                 "type": newMessage.kind.messageKindString,
                 "content": message,

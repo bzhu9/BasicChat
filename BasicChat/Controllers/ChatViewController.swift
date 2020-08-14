@@ -514,6 +514,36 @@ extension ChatViewController: MessagesDataSource, MessagesLayoutDelegate, Messag
             break
         }
     }
+    
+    func messageTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
+        let name = message.sender.displayName
+        return NSAttributedString(
+          string: name,
+          attributes: [.font: UIFont.systemFont(ofSize: 12)]
+        )
+    }
+    
+    func messageTopLabelHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+        return 20
+    }
+    
+    func configureAvatarView(_ avatarView: AvatarView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
+        let email = message.sender.senderId
+        let filename = email + "_profile_picture.png"
+        let path = "images/" + filename
+        
+        StorageManager.shared.downloadURL(for: path, completion: { result in
+            switch result {
+            case .success(let url):
+                DispatchQueue.main.async {
+                    avatarView.sd_setImage(with: url, completed: nil)
+                }
+            case .failure(let error):
+                print ("Failed to get download url: \(error)")
+            }
+        })
+    }
+    
 }
 
 extension ChatViewController: MessageCellDelegate {
