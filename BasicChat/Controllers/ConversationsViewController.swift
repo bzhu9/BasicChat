@@ -123,20 +123,23 @@ class ConversationsViewController: UIViewController {
                     switch secondResult {
                     case .success(let gc):
                         groupChats = gc
-                        guard !conversations.isEmpty else {
+                        /*guard !conversations.isEmpty else {
                             return
-                        }
-                        let sortedConversations = (conversations+groupChats).sorted(by: {(lhs:Conversation,rhs:Conversation) -> Bool in
-                            return lhs > rhs
-                        })
+                        }*/
                         
-                        strongSelf.conversations = sortedConversations
-                        
-                        DispatchQueue.main.async {
-                            strongSelf.tableView.reloadData()
-                        }
                     case .failure(let error):
-                        print("Failed to get group chats: \(error)")
+                        print("Failed to get group chats (oof): \(error)")
+                    }
+                    
+                    print(conversations+groupChats)
+                    let sortedConversations = (conversations+groupChats).sorted(by: {(lhs:Conversation,rhs:Conversation) -> Bool in
+                        return lhs > rhs
+                    })
+                    
+                    strongSelf.conversations = sortedConversations
+                    
+                    DispatchQueue.main.async {
+                        strongSelf.tableView.reloadData()
                     }
                     
                 })
@@ -170,21 +173,22 @@ class ConversationsViewController: UIViewController {
                     switch secondResult {
                     case .success(let convos):
                         conversations = convos
-                        guard !groupChats.isEmpty else {
+                        /*guard !groupChats.isEmpty else {
                             return
-                        }
-                        print(conversations+groupChats)
-                        let sortedConversations = (conversations+groupChats).sorted(by: {(lhs:Conversation,rhs:Conversation) -> Bool in
-                            return lhs > rhs
-                        })
+                        }*/
                         
-                        strongSelf.conversations = sortedConversations
-                        
-                        DispatchQueue.main.async {
-                            strongSelf.tableView.reloadData()
-                        }
                     case .failure(let error):
                         print("Failed to get conversations: \(error)")
+                    }
+                    print(conversations+groupChats)
+                    let sortedConversations = (conversations+groupChats).sorted(by: {(lhs:Conversation,rhs:Conversation) -> Bool in
+                        return lhs > rhs
+                    })
+                    
+                    strongSelf.conversations = sortedConversations
+                    
+                    DispatchQueue.main.async {
+                        strongSelf.tableView.reloadData()
                     }
                     
                 })

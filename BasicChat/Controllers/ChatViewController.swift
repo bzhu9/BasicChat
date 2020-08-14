@@ -231,6 +231,7 @@ class ChatViewController: MessagesViewController {
         })
     }
     
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         messageInputBar.inputTextView.becomeFirstResponder()

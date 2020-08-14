@@ -336,6 +336,9 @@ extension DatabaseManager {
                     completion (.success(conversations))
                 })
             }
+            else{
+                completion (.failure(DatabaseError.failedToFetch))
+            }
         })
     }
     
@@ -1096,6 +1099,9 @@ extension DatabaseManager {
                     })
                     completion (.success(groupChats))
                 })
+            }
+            else{
+                completion (.failure(DatabaseError.failedToFetch))
             }
         })
     }
