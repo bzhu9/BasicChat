@@ -155,7 +155,7 @@ class LoginViewController: UIViewController {
         facebookLoginButton.frame = CGRect(x: 30,
                                    y: loginButton.bottom + 10,
                                    width: scrollView.width-60,
-                                   height: 52)
+                                   height: 28)
         googleLoginButton.frame = CGRect(x: 30,
                                            y: facebookLoginButton.bottom + 10,
                                            width: scrollView.width-60,

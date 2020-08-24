@@ -85,7 +85,6 @@ class ConversationsViewController: UIViewController {
         view.addSubview(tableView)
         view.addSubview(noConversationsLabel)
         setupTableView()
-        fetchConversations()
         startListeningForConversations()
         startListeningForGroupChats ()
         
@@ -136,6 +135,15 @@ class ConversationsViewController: UIViewController {
                         return lhs > rhs
                     })
                     
+                    if sortedConversations.isEmpty {
+                        self?.tableView.isHidden = true
+                        self?.noConversationsLabel.isHidden = false
+                        print ("hi")
+                        return
+                    }
+                    self?.tableView.isHidden = false
+                    self?.noConversationsLabel.isHidden = true
+                    
                     strongSelf.conversations = sortedConversations
                     
                     DispatchQueue.main.async {
@@ -184,6 +192,15 @@ class ConversationsViewController: UIViewController {
                     let sortedConversations = (conversations+groupChats).sorted(by: {(lhs:Conversation,rhs:Conversation) -> Bool in
                         return lhs > rhs
                     })
+                    
+                    if sortedConversations.isEmpty {
+                        self?.tableView.isHidden = true
+                        self?.noConversationsLabel.isHidden = false
+                        return
+                    }
+                    
+                    self?.tableView.isHidden = false
+                    self?.noConversationsLabel.isHidden = true
                     
                     strongSelf.conversations = sortedConversations
                     
@@ -299,7 +316,7 @@ class ConversationsViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.frame = view.bounds
-        
+        noConversationsLabel.frame = CGRect(x: 10, y: (view.height-100)/2, width: view.width-20, height: 100)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -319,10 +336,6 @@ class ConversationsViewController: UIViewController {
     private func setupTableView(){
         tableView.delegate = self
         tableView.dataSource = self
-    }
-    
-    private func fetchConversations() {
-        tableView.isHidden = false
     }
 
 }

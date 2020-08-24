@@ -66,6 +66,8 @@ struct Location: LocationItem {
 
 class ChatViewController: MessagesViewController {
     
+    private var senderPhotoURLS = [String:URL]()
+    
     public static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
@@ -462,6 +464,7 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
                         self?.isNewConversation = false
                         self?.chatId = "group_chats/\(id)"
                         self?.messageInputBar.inputTextView.text = nil
+                        self?.listenforConversationMessages(id: "group_chats/\(id)", shouldScrollToBottom: true)
                     case .failure(_):
                         print("Failed to send")
                     }
@@ -475,6 +478,7 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
                         self?.isNewConversation = false
                         self?.chatId = id
                         self?.messageInputBar.inputTextView.text = nil
+                        self?.listenforConversationMessages(id: id, shouldScrollToBottom: true)
                     case .failure(_):
                         print("Failed to send")
                     }
@@ -595,22 +599,36 @@ extension ChatViewController: MessagesDataSource, MessagesLayoutDelegate, Messag
     }
     
     func configureAvatarView(_ avatarView: AvatarView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
-        let email = message.sender.senderId
-        let filename = email + "_profile_picture.png"
-        let path = "images/" + filename
-        
-        StorageManager.shared.downloadURL(for: path, completion: { result in
-            switch result {
-            case .success(let url):
-                DispatchQueue.main.async {
-                    avatarView.sd_setImage(with: url, completed: nil)
+        let sender = message.sender
+        if self.senderPhotoURLS.keys.contains(sender.senderId){
+            avatarView.sd_setImage(with: self.senderPhotoURLS[sender.senderId], completed: nil)
+        }
+        else {
+            let email = message.sender.senderId
+            let filename = email + "_profile_picture.png"
+            let path = "images/" + filename
+            
+            StorageManager.shared.downloadURL(for: path, completion: { [weak self] result in
+                switch result {
+                case .success(let url):
+                    DispatchQueue.main.async {
+                        avatarView.sd_setImage(with: url, completed: nil)
+                    }
+                    self?.senderPhotoURLS[sender.senderId] = url
+                case .failure(let error):
+                    print ("Failed to get download url: \(error)")
                 }
-            case .failure(let error):
-                print ("Failed to get download url: \(error)")
-            }
-        })
+            })
+        }
     }
     
+    func backgroundColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
+        let sender = message.sender
+        if sender.senderId == selfSender?.senderId {
+            return .link
+        }
+        return .secondarySystemBackground
+    }
 }
 
 extension ChatViewController: MessageCellDelegate {
