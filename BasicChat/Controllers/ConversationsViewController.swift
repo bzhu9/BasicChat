@@ -98,6 +98,10 @@ class ConversationsViewController: UIViewController {
         })
     }
     
+    @IBAction func crashButtonTapped(_ sender: AnyObject) {
+        fatalError()
+    }
+    
     private func startListeningForConversations() {
         guard let email = UserDefaults.standard.value(forKey: "email") as? String else {
             return
