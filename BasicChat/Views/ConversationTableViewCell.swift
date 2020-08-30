@@ -71,7 +71,19 @@ class ConversationTableViewCell: UITableViewCell {
             userNameLabel.text = model.otherUsers[0].name
             path = "images/\(model.otherUsers[0].email)_profile_picture.png"
         }
-        userMessageLabel.text = model.latestMessage.text
+        if model.latestMessage.kind == "text"{
+            userMessageLabel.text = model.latestMessage.text
+        }
+        else if model.latestMessage.kind == "photo"{
+            userMessageLabel.text = "Attachment: 1 Image"
+        }
+        else if model.latestMessage.kind == "video"{
+            userMessageLabel.text = "Attachment: 1 Video"
+        }
+        else if model.latestMessage.kind == "location"{
+            userMessageLabel.text = "Attachment: 1 Location"
+        }
+        
         
         StorageManager.shared.downloadURL(for: path, completion: { [weak self] result in
             switch result{

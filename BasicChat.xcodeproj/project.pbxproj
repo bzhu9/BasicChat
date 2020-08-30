@@ -37,6 +37,8 @@
 		A9D2E46224A51708007E3BB1 /* BasicChatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D2E46124A51708007E3BB1 /* BasicChatTests.swift */; };
 		A9D2E46D24A51708007E3BB1 /* BasicChatUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D2E46C24A51708007E3BB1 /* BasicChatUITests.swift */; };
 		B83911CE24E31BD700DBD5D4 /* NewGroupChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83911CD24E31BD700DBD5D4 /* NewGroupChatViewController.swift */; };
+		B86208B124FBFCA8005630EA /* AnnouncementsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86208B024FBFCA8005630EA /* AnnouncementsViewController.swift */; };
+		B86208B324FBFEBD005630EA /* AnnouncementTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86208B224FBFEBD005630EA /* AnnouncementTableViewCell.swift */; };
 		BA042FF252FA8530A0393461 /* Pods_BasicChat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A80540DE9BEE258ED9F47EAE /* Pods_BasicChat.framework */; };
 /* End PBXBuildFile section */
 
@@ -98,6 +100,8 @@
 		A9D2E46C24A51708007E3BB1 /* BasicChatUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicChatUITests.swift; sourceTree = "<group>"; };
 		A9D2E46E24A51708007E3BB1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B83911CD24E31BD700DBD5D4 /* NewGroupChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewGroupChatViewController.swift; sourceTree = "<group>"; };
+		B86208B024FBFCA8005630EA /* AnnouncementsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementsViewController.swift; sourceTree = "<group>"; };
+		B86208B224FBFEBD005630EA /* AnnouncementTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementTableViewCell.swift; sourceTree = "<group>"; };
 		D1257C40A9FCABC1433DED76 /* Pods-BasicChatTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BasicChatTests.debug.xcconfig"; path = "Target Support Files/Pods-BasicChatTests/Pods-BasicChatTests.debug.xcconfig"; sourceTree = "<group>"; };
 		E1A362DEDEFCF1EDB030C4B3 /* Pods-BasicChat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BasicChat.release.xcconfig"; path = "Target Support Files/Pods-BasicChat/Pods-BasicChat.release.xcconfig"; sourceTree = "<group>"; };
 		E97FD7A4D45F5E0AFF30DB0D /* Pods-BasicChat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BasicChat.debug.xcconfig"; path = "Target Support Files/Pods-BasicChat/Pods-BasicChat.debug.xcconfig"; sourceTree = "<group>"; };
@@ -156,6 +160,7 @@
 				A9B179E924D863410005275E /* ChatViewController.swift */,
 				A91855B424E42D2B0038423C /* UserSearchViewController.swift */,
 				A9211EDB24F0AE96009984C6 /* LocationPickerViewController.swift */,
+				B86208B024FBFCA8005630EA /* AnnouncementsViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -167,6 +172,7 @@
 				A9D2E45324A51707007E3BB1 /* Assets.xcassets */,
 				A945C69D24DB33EC009F9D95 /* ConversationTableViewCell.swift */,
 				A91855B224E236460038423C /* NewConversationCell.swift */,
+				B86208B224FBFEBD005630EA /* AnnouncementTableViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -582,10 +588,12 @@
 				A997D8D824AA324D00118683 /* LoginViewController.swift in Sources */,
 				A9211EDC24F0AE97009984C6 /* LocationPickerViewController.swift in Sources */,
 				A91855B524E42D2C0038423C /* UserSearchViewController.swift in Sources */,
+				B86208B124FBFCA8005630EA /* AnnouncementsViewController.swift in Sources */,
 				A91855B324E236460038423C /* NewConversationCell.swift in Sources */,
 				A94C481F24B11EEF00AD1F92 /* DatabaseManager.swift in Sources */,
 				A997D8CC24AA2D1800118683 /* RegisterViewController.swift in Sources */,
 				A997D8D224AA2D5E00118683 /* NewConversationViewController.swift in Sources */,
+				B86208B324FBFEBD005630EA /* AnnouncementTableViewCell.swift in Sources */,
 				A9432D0F24FBE4C800CA07CB /* GroupChatModel.swift in Sources */,
 				A9432D0724FBE3A000CA07CB /* ConversationModels.swift in Sources */,
 				A9D2E44B24A516F8007E3BB1 /* AppDelegate.swift in Sources */,

@@ -186,7 +186,8 @@ extension DatabaseManager {
                 "latest_message": [
                     "date": dateString,
                     "is_read": false,
-                    "message": message
+                    "message": message,
+                    "type": firstMessage.kind.messageKindString
                 ],
             ]
             
@@ -197,7 +198,8 @@ extension DatabaseManager {
                 "latest_message": [
                     "date": dateString,
                     "is_read": false,
-                    "message": message
+                    "message": message,
+                    "type": firstMessage.kind.messageKindString
                 ],
             ]
             // Update recipient conversation entry
@@ -312,10 +314,11 @@ extension DatabaseManager {
                     let lastestMessage = dictionary["latest_message"] as? [String:Any],
                     let date = lastestMessage["date"] as? String,
                     let message = lastestMessage["message"] as? String,
+                    let type = lastestMessage["type"] as? String,
                     let isRead = lastestMessage["is_read"] as? Bool else {
                         return nil
                 }
-                let lastestMessageObject = LatestMessage(date: date, text: message, read: isRead)
+                let lastestMessageObject = LatestMessage(date: date, text: message, read: isRead, kind: type)
                 return Conversation(id: conversationId, otherUsers: [SearchResult(name: name, email: otherUserEmail)],isGroupChat: false, latestMessage: lastestMessageObject)
             })
             completion (.success(conversations))
@@ -341,10 +344,11 @@ extension DatabaseManager {
                             let lastestMessage = dictionary["latest_message"] as? [String:Any],
                             let date = lastestMessage["date"] as? String,
                             let message = lastestMessage["message"] as? String,
+                            let type = lastestMessage["type"] as? String,
                             let isRead = lastestMessage["is_read"] as? Bool else {
                                 return nil
                         }
-                        let lastestMessageObject = LatestMessage(date: date, text: message, read: isRead)
+                        let lastestMessageObject = LatestMessage(date: date, text: message, read: isRead, kind: type)
                         return Conversation(id: conversationId, otherUsers: [SearchResult(name: name, email: otherUserEmail)],isGroupChat: false, latestMessage: lastestMessageObject)
                     })
                     completion (.success(conversations))
@@ -504,6 +508,7 @@ extension DatabaseManager {
                         "date": dateString,
                         "is_read": false,
                         "message": message,
+                        "type": newMessage.kind.messageKindString
                     ]
                     if var currentUserConversations = snapshot.value as? [[String: Any]] {
                         var position = 0
@@ -559,6 +564,7 @@ extension DatabaseManager {
                                 "date": dateString,
                                 "is_read": false,
                                 "message": message,
+                                "type": newMessage.kind.messageKindString
                             ]
                             if var otherUserConversations = snapshot.value as? [[String: Any]] {
                                 var position = 0
@@ -757,7 +763,8 @@ extension DatabaseManager {
                 "latest_message": [
                     "date": dateString,
                     "is_read": false,
-                    "message": message
+                    "message": message,
+                    "type": firstMessage.kind.messageKindString
                 ],
             ]
             
@@ -772,7 +779,8 @@ extension DatabaseManager {
                     "latest_message": [
                         "date": dateString,
                         "is_read": false,
-                        "message": message
+                        "message": message,
+                        "type": firstMessage.kind.messageKindString
                     ],
                 ]
                 // Update recipient conversation entry
@@ -959,6 +967,7 @@ extension DatabaseManager {
                         "date": dateString,
                         "is_read": false,
                         "message": message,
+                        "type": newMessage.kind.messageKindString
                     ]
                     
                     var memberEmails = [String]()
@@ -1019,6 +1028,7 @@ extension DatabaseManager {
                                     "date": dateString,
                                     "is_read": false,
                                     "message": message,
+                                    "type": newMessage.kind.messageKindString
                                 ]
                                 if var otherUserConversations = snapshot.value as? [[String: Any]] {
                                     var position = 0
@@ -1082,10 +1092,11 @@ extension DatabaseManager {
                     let lastestMessage = dictionary["latest_message"] as? [String:Any],
                     let date = lastestMessage["date"] as? String,
                     let message = lastestMessage["message"] as? String,
+                    let type = lastestMessage["type"] as? String,
                     let isRead = lastestMessage["is_read"] as? Bool else {
                         return nil
                 }
-                let lastestMessageObject = LatestMessage(date: date, text: message, read: isRead)
+                let lastestMessageObject = LatestMessage(date: date, text: message, read: isRead, kind: type)
                 
                 var otherMembers = [SearchResult]()
                 for user in otherUsers {
@@ -1116,6 +1127,7 @@ extension DatabaseManager {
                             let lastestMessage = dictionary["latest_message"] as? [String:Any],
                             let date = lastestMessage["date"] as? String,
                             let message = lastestMessage["message"] as? String,
+                            let type = lastestMessage["type"] as? String,
                             let isRead = lastestMessage["is_read"] as? Bool else {
                                 return nil
                         }
@@ -1123,7 +1135,7 @@ extension DatabaseManager {
                         for user in otherUsers {
                             otherMembers.append(SearchResult(name: user["name"] as! String, email: user["email"] as! String))
                         }
-                        let lastestMessageObject = LatestMessage(date: date, text: message, read: isRead)
+                        let lastestMessageObject = LatestMessage(date: date, text: message, read: isRead, kind: type)
                          return Conversation(id: conversationId, otherUsers: otherMembers, isGroupChat: true, latestMessage: lastestMessageObject)
                     })
                     completion (.success(groupChats))

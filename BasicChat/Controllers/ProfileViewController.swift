@@ -11,6 +11,7 @@ import FirebaseAuth
 import FBSDKLoginKit
 import GoogleSignIn
 import SDWebImage
+import JGProgressHUD
 
 final class ProfileViewController: UIViewController {
     
@@ -23,51 +24,52 @@ final class ProfileViewController: UIViewController {
         tableView.register(ProfileTableViewCell.self, forCellReuseIdentifier: ProfileTableViewCell.identifier)
         data.append(ProfileViewModel(viewModelType: .info, title: "Name: \(UserDefaults.standard.value(forKey: "name") as? String ?? "No name")", handler: nil))
         data.append(ProfileViewModel(viewModelType: .info, title: "Email: \(UserDefaults.standard.value(forKey: "email") as? String ?? "No email")", handler: nil))
-        data.append(ProfileViewModel(viewModelType: .logout, title: "Log Out", handler: { [weak self] in
-            guard let strongSelf = self else {
-                return
-            }
-            let actionSheet = UIAlertController(title: "",
-                                                message: "",
-                                                preferredStyle: .actionSheet)
-            
-            actionSheet.addAction(UIAlertAction(title: "Log Out",
-                                                style: .destructive,
-                                                handler: {_ in
-                                                    
-                                                    UserDefaults.standard.setValue(nil, forKey: "email")
-                                                    UserDefaults.standard.setValue(nil, forKey: "name")
-                                                    
-                                                    // Log Out facebook
-                                                    FBSDKLoginKit.LoginManager().logOut()
-                                                    
-                                                    // Google Log out
-                                                    GIDSignIn.sharedInstance()?.signOut()
-                                                    
-                                                    
-                                                    do {
-                                                        try FirebaseAuth.Auth.auth().signOut()
-                                                        let vc = LoginViewController()
-                                                        let nav = UINavigationController(rootViewController: vc)
-                                                        nav.modalPresentationStyle = .fullScreen
-                                                        strongSelf.present(nav, animated: true)
-                                                    }
-                                                    catch{
-                                                        print("Failed to log out")
-                                                    }
-            }))
-            
-            actionSheet.addAction(UIAlertAction(title: "Cancel",
-                                                style: .cancel,
-                                                handler: nil))
-            
-            strongSelf.present(actionSheet, animated: true)
-        }))
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Log Out", style: .done, target: self, action: #selector(logout(sender:)))
+        
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.delegate = self
         tableView.dataSource = self
         tableView.tableHeaderView = createTableHeader()
         // Do any additional setup after loading the view.
+    }
+    
+    @objc func logout(sender: UIBarButtonItem) {
+        let actionSheet = UIAlertController(title: "",
+                                            message: "",
+                                            preferredStyle: .actionSheet)
+        
+        actionSheet.addAction(UIAlertAction(title: "Log Out",
+                                            style: .destructive,
+                                            handler: {_ in
+                                                
+                                                UserDefaults.standard.setValue(nil, forKey: "email")
+                                                UserDefaults.standard.setValue(nil, forKey: "name")
+                                                
+                                                // Log Out facebook
+                                                FBSDKLoginKit.LoginManager().logOut()
+                                                
+                                                // Google Log out
+                                                GIDSignIn.sharedInstance()?.signOut()
+                                                
+                                                
+                                                do {
+                                                    try FirebaseAuth.Auth.auth().signOut()
+                                                    let vc = LoginViewController()
+                                                    let nav = UINavigationController(rootViewController: vc)
+                                                    nav.modalPresentationStyle = .fullScreen
+                                                    self.present(nav, animated: true)
+                                                }
+                                                catch{
+                                                    print("Failed to log out")
+                                                }
+        }))
+        
+        actionSheet.addAction(UIAlertAction(title: "Cancel",
+                                            style: .cancel,
+                                            handler: nil))
+        
+        self.present(actionSheet, animated: true)
     }
     
     func createTableHeader() -> UIView? {

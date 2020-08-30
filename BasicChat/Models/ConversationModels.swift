@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import MessageKit
 
 struct Conversation {
     let id: String
@@ -41,4 +42,5 @@ struct LatestMessage {
     let date: String
     let text: String
     let read: Bool
+    let kind: String
 }

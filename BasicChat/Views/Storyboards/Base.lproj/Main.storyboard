@@ -110,7 +110,7 @@
         <!--Announcements-->
         <scene sceneID="M8P-1K-fnV">
             <objects>
-                <viewController id="Qgc-Fi-6Ee" sceneMemberID="viewController">
+                <viewController id="Qgc-Fi-6Ee" customClass="AnnouncementsViewController" customModule="BasicChat" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="q0c-PO-pcm">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
