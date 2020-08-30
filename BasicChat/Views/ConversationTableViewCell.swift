@@ -64,14 +64,14 @@ class ConversationTableViewCell: UITableViewCell {
     public func configure (with model: Conversation) {
         var path: String
         if model.isGroupChat{
-            self.userNameLabel.text = model.id
+            userNameLabel.text = model.id
             path = "images/\(model.otherUsers[0].email)_profile_picture.png"
         }
         else {
-            self.userNameLabel.text = model.otherUsers[0].name
+            userNameLabel.text = model.otherUsers[0].name
             path = "images/\(model.otherUsers[0].email)_profile_picture.png"
         }
-        self.userMessageLabel.text = model.latestMessage.text
+        userMessageLabel.text = model.latestMessage.text
         
         StorageManager.shared.downloadURL(for: path, completion: { [weak self] result in
             switch result{

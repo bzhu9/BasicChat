@@ -9,13 +9,7 @@
 import UIKit
 import JGProgressHUD
 
-struct GroupChat {
-    let members: [SearchResult]
-    let name: String
-    //might need unique id later
-}
-
-class NewGroupChatViewController: UIViewController {
+final class NewGroupChatViewController: UIViewController {
     
     public var completion: ((GroupChat) -> (Void))?
     

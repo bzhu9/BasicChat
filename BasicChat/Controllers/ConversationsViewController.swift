@@ -10,42 +10,7 @@ import UIKit
 import FirebaseAuth
 import JGProgressHUD
 
-struct Conversation {
-    let id: String
-    let otherUsers: [SearchResult]
-//    let name: String
-    let isGroupChat: Bool
-//    let otherUserEmails: [String]
-    let latestMessage: LatestMessage
-}
-
-extension Conversation: Comparable{
-    static func < (lhs: Conversation, rhs: Conversation) -> Bool {
-        let lhsDateObject = ChatViewController.dateFormatter.date(from: lhs.latestMessage.date)
-        let rhsDateObject = ChatViewController.dateFormatter.date(from: rhs.latestMessage.date)
-        if lhsDateObject?.compare(rhsDateObject!) == .orderedAscending{
-            return true
-        }
-        return false
-    }
-    
-    static func == (lhs: Conversation, rhs: Conversation) -> Bool {
-        let lhsDateObject = ChatViewController.dateFormatter.date(from: lhs.latestMessage.date)
-        let rhsDateObject = ChatViewController.dateFormatter.date(from: rhs.latestMessage.date)
-        if lhsDateObject?.compare(rhsDateObject!) == .orderedSame{
-            return true
-        }
-        return false
-    }
-}
-
-struct LatestMessage {
-    let date: String
-    let text: String
-    let read: Bool
-}
-
-class ConversationsViewController: UIViewController {
+final class ConversationsViewController: UIViewController {
     
     private let spinner = JGProgressHUD(style: .dark)
     
@@ -386,11 +351,11 @@ extension ConversationsViewController: UITableViewDelegate, UITableViewDataSourc
         if editingStyle == .delete {
             let conversationId = conversations[indexPath.row].id
             tableView.beginUpdates()
-            
-            DatabaseManager.shared.deleteConversation(conversationId: conversationId, completion: { [weak self] success in
-                if success {
-                    self?.conversations.remove(at: indexPath.row)
-                    tableView.deleteRows(at: [indexPath], with: .left)
+            self.conversations.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .left)
+            DatabaseManager.shared.deleteConversation(conversationId: conversationId, completion: { success in
+                if !success {
+                    print ("Failed to delete conversation")
                 }
             })
             
