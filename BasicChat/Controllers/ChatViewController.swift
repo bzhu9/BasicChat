@@ -238,7 +238,7 @@ final class ChatViewController: MessagesViewController {
                             return
                         }
                         //self?.messagesCollectionView.scrollToItem(at: IndexPath(row: 0, section: count-1), at: .bottom, animated: true)
-                        self?.messagesCollectionView.scrollToLastItem(at: .bottom, animated: false)
+                        self?.messagesCollectionView.scrollToLastItem(at: .bottom, animated: true)
                     }
                 }
             case .failure(let error):

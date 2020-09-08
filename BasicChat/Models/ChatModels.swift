@@ -43,9 +43,9 @@ extension MessageKind {
 }
 
 struct Sender: SenderType {
-    public var photoURL: String
-    public var senderId: String
-    public var displayName: String
+    var photoURL: String
+    var senderId: String
+    var displayName: String
 }
 
 struct Media: MediaItem {

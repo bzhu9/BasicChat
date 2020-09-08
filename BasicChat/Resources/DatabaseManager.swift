@@ -11,7 +11,7 @@ import FirebaseDatabase
 import MessageKit
 import CoreLocation
 
-/// Manager object to read and write data to the real time firebase database
+/// Group Chats manager object to read and write data to the real time firebase database
 final class DatabaseManager{
     /// Shared instance of class
     public static let shared = DatabaseManager()
@@ -57,6 +57,7 @@ extension DatabaseManager {
             completion(true)
         })
     }
+    
     
     /// Inserts New User to Database
     public func insertUser(with user: ChatAppUser, completion: @escaping (Bool) -> Void){
