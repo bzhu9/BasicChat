@@ -13,10 +13,19 @@ class ConversationTableViewCell: UITableViewCell {
     
     static let identifier = "ConversationTableViewCell"
     
+    private let unreadDot: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 42, weight: .semibold)
+        label.textColor = .link
+        label.text = "•"
+        label.isHidden = true
+        return label
+    }()
+    
     private let userImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.layer.cornerRadius = 50
+        imageView.layer.cornerRadius = 75/2 //Width and height divided by 2
         imageView.layer.masksToBounds = true
         return imageView
     }()
@@ -31,6 +40,7 @@ class ConversationTableViewCell: UITableViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: 19, weight: .regular)
         label.numberOfLines = 0
+        
         return label
     }()
     
@@ -39,6 +49,7 @@ class ConversationTableViewCell: UITableViewCell {
         contentView.addSubview(userImageView)
         contentView.addSubview(userNameLabel)
         contentView.addSubview(userMessageLabel)
+        contentView.addSubview(unreadDot)
     }
     
     required init?(coder: NSCoder) {
@@ -48,18 +59,22 @@ class ConversationTableViewCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        userImageView.frame = CGRect(x: 10,
-                                     y: 10,
-                                     width: 100,
-                                     height: 100)
+        unreadDot.frame = CGRect(x: 5,
+                                 y: contentView.height/2-10,
+                                 width: 20,
+                                 height: 20)
+        userImageView.frame = CGRect(x: 30,
+                                     y: 20,
+                                     width: 75,
+                                     height: 75)
         userNameLabel.frame = CGRect(x: userImageView.right + 10,
                                      y: 10,
                                      width: contentView.width - 20 - userImageView.width,
-                                     height: (contentView.height - 20)/2)
+                                     height: (contentView.height - 20)/4)
         userMessageLabel.frame = CGRect(x: userImageView.right + 10,
                                         y: userNameLabel.bottom + 10,
                                         width: contentView.width - 20 - userImageView.width,
-                                        height: (contentView.height - 20)/2)
+                                        height: 3*(contentView.height - 20)/4)
     }
     public func configure (with model: Conversation) {
         var path: String
@@ -70,6 +85,9 @@ class ConversationTableViewCell: UITableViewCell {
         else {
             userNameLabel.text = model.otherUsers[0].name
             path = "images/\(model.otherUsers[0].email)_profile_picture.png"
+        }
+        if !model.latestMessage.read {
+            unreadDot.isHidden = false
         }
         if model.latestMessage.kind == "text"{
             userMessageLabel.text = model.latestMessage.text

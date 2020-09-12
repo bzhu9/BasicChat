@@ -232,7 +232,8 @@ final class ChatViewController: MessagesViewController {
                 self?.messages = messages
                 
                 DispatchQueue.main.async {
-                    self?.messagesCollectionView.reloadDataAndKeepOffset()
+//                    self?.messagesCollectionView.reloadDataAndKeepOffset()
+                    self?.messagesCollectionView.reloadData()
                     if shouldScrollToBottom {
                         guard let count = self?.messages.count else {
                             return

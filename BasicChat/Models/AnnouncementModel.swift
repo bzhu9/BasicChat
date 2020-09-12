@@ -14,7 +14,7 @@ import Foundation
 /// - `authorEmail`:  Author's email
 /// - `title`: Title of announcement
 /// - `description`: Description of event / purpose of announcement
-/// - `organisation`:  Club/organisation the announcement is about
+/// - `organization`:  Club/organization the announcement is about
 /// - `photoURLS`: Optional photos
 /// - `comments`: Array of comments
 struct Announcement {
@@ -22,7 +22,7 @@ struct Announcement {
     let authorEmail: String
     let title: String
     let description: String
-    let organisation: String
+    let organization: String
     let photoURLS: [String]
     let comments: [Comment]
 }

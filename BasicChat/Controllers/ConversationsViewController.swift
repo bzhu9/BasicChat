@@ -322,8 +322,17 @@ extension ConversationsViewController: UITableViewDelegate, UITableViewDataSourc
         return cell
     }
     
+    func readMessage (_ model: Conversation) {
+        DatabaseManager.shared.markAsRead(with: model, completion: { success in
+            if !success {
+                print ("Error ecured while reading message")
+            }
+        })
+    }
+    
     func openConversation (_ model: Conversation) {
         var vc: ChatViewController
+        readMessage(model)
         if model.isGroupChat {
             vc = ChatViewController(users: model.otherUsers, id: model.id, isGroupChat: true)
             vc.title = model.id
@@ -338,13 +347,13 @@ extension ConversationsViewController: UITableViewDelegate, UITableViewDataSourc
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let model = conversations[indexPath.row]
-        
+        var model = conversations[indexPath.row]
+        model.latestMessage.read = true
         openConversation(model)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 120
+        return 115
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {

@@ -684,6 +684,44 @@ extension DatabaseManager {
             return
         })
     }
+    public func markAsRead (with convo: Conversation, completion: @escaping (Bool) -> Void) {
+        guard let email = UserDefaults.standard.value(forKey: "email") as? String else {
+            return
+        }
+        let safeEmail = DatabaseManager.safeEmail(emailAddress: email)
+        let ref = database.child("\(safeEmail)/conversations")
+        
+        ref.observeSingleEvent(of: .value, with: { snapshot in
+            if var conversations = snapshot.value as? [[String: Any]] {
+                var positionToChange = 0
+                for conversation in conversations {
+                    if let id = conversation["id"] as? String,
+                    id == convo.id {
+                        var newConversationData = conversation
+                        guard var latest_message = newConversationData["latest_message"] as? [String: Any] else {
+                            return
+                        }
+                        latest_message["is_read"] = true
+                        newConversationData["latest_message"] = latest_message
+                        print (newConversationData)
+                        conversations.remove(at: positionToChange)
+                        conversations.insert(newConversationData, at: positionToChange)
+                        break
+                    }
+                    positionToChange += 1
+                }
+                ref.setValue(conversations, withCompletionBlock: { error, _  in
+                    guard error == nil else {
+                        completion(false)
+                        print("faield to write new conversation array")
+                        return
+                    }
+                    print("read conversation")
+                    completion(true)
+                })
+            }
+        })
+    }
 }
 
 // MARK: - Group Chat Messages

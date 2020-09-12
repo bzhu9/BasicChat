@@ -15,7 +15,7 @@ struct Conversation {
 //    let name: String
     let isGroupChat: Bool
 //    let otherUserEmails: [String]
-    let latestMessage: LatestMessage
+    var latestMessage: LatestMessage
 }
 
 extension Conversation: Comparable{
@@ -41,6 +41,6 @@ extension Conversation: Comparable{
 struct LatestMessage {
     let date: String
     let text: String
-    let read: Bool
+    var read: Bool
     let kind: String
 }
