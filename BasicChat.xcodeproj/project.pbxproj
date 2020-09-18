@@ -41,6 +41,7 @@
 		B83911CE24E31BD700DBD5D4 /* NewGroupChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83911CD24E31BD700DBD5D4 /* NewGroupChatViewController.swift */; };
 		B86208B124FBFCA8005630EA /* AnnouncementsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86208B024FBFCA8005630EA /* AnnouncementsViewController.swift */; };
 		B86208B324FBFEBD005630EA /* AnnouncementTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86208B224FBFEBD005630EA /* AnnouncementTableViewCell.swift */; };
+		B89204DD25153AF1004F6D3D /* NewAnnouncementsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89204DC25153AF1004F6D3D /* NewAnnouncementsViewController.swift */; };
 		BA042FF252FA8530A0393461 /* Pods_BasicChat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A80540DE9BEE258ED9F47EAE /* Pods_BasicChat.framework */; };
 /* End PBXBuildFile section */
 
@@ -106,6 +107,7 @@
 		B83911CD24E31BD700DBD5D4 /* NewGroupChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewGroupChatViewController.swift; sourceTree = "<group>"; };
 		B86208B024FBFCA8005630EA /* AnnouncementsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementsViewController.swift; sourceTree = "<group>"; };
 		B86208B224FBFEBD005630EA /* AnnouncementTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementTableViewCell.swift; sourceTree = "<group>"; };
+		B89204DC25153AF1004F6D3D /* NewAnnouncementsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewAnnouncementsViewController.swift; sourceTree = "<group>"; };
 		D1257C40A9FCABC1433DED76 /* Pods-BasicChatTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BasicChatTests.debug.xcconfig"; path = "Target Support Files/Pods-BasicChatTests/Pods-BasicChatTests.debug.xcconfig"; sourceTree = "<group>"; };
 		E1A362DEDEFCF1EDB030C4B3 /* Pods-BasicChat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BasicChat.release.xcconfig"; path = "Target Support Files/Pods-BasicChat/Pods-BasicChat.release.xcconfig"; sourceTree = "<group>"; };
 		E97FD7A4D45F5E0AFF30DB0D /* Pods-BasicChat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BasicChat.debug.xcconfig"; path = "Target Support Files/Pods-BasicChat/Pods-BasicChat.debug.xcconfig"; sourceTree = "<group>"; };
@@ -165,6 +167,7 @@
 				A91855B424E42D2B0038423C /* UserSearchViewController.swift */,
 				A9211EDB24F0AE96009984C6 /* LocationPickerViewController.swift */,
 				B86208B024FBFCA8005630EA /* AnnouncementsViewController.swift */,
+				B89204DC25153AF1004F6D3D /* NewAnnouncementsViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -617,6 +620,7 @@
 				A997D8CE24AA2D3C00118683 /* PhotoViewerViewController.swift in Sources */,
 				B83911CE24E31BD700DBD5D4 /* NewGroupChatViewController.swift in Sources */,
 				A9B179EC24D8E9A30005275E /* StorageManager.swift in Sources */,
+				B89204DD25153AF1004F6D3D /* NewAnnouncementsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

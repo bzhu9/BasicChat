@@ -28,9 +28,8 @@ class AnnouncementsViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     @objc private func didTapComposeButton(){
-        AnnouncementsDatabaseManager.shared.createNewAnnouncement(with: Announcement(authorName: "Brian Zhu", authorEmail: "bzhu", title: "My first post", description: "wow look this is my first post! wow look this is my first post! wow look this is my first post! wow look this is my first post! wow look this is my first post!", organization: "Test", photoURLS: ["testurl"], comments: [Comment(senderName: "Kyle Xu", senderEmail: "kxu", commentText: "Wow this ia great post!")]), completion: {_ in
-            print("Success")
-        })
+        let vc = NewAnnouncementsViewController()
+        present(vc,animated: true)
     }
     
     private func startListeningForAnnouncements(){
