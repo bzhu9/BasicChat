@@ -28,8 +28,11 @@ class AnnouncementsViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     @objc private func didTapComposeButton(){
-        let vc = NewAnnouncementsViewController()
-        present(vc,animated: true)
+        let mainStoryboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        let vc = mainStoryboard.instantiateViewController(withIdentifier: "NewAnnouncementsViewController")
+        let navVC = UINavigationController(rootViewController: vc)
+        //navigationController?.pushViewController(navVC, animated: true)
+        present(navVC,animated: true)
     }
     
     private func startListeningForAnnouncements(){

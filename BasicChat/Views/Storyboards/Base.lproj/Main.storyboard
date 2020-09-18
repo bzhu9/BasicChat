@@ -180,7 +180,7 @@
         <!--NewAnnouncementsViewController-->
         <scene sceneID="MMG-9A-BBM">
             <objects>
-                <viewController title="NewAnnouncementsViewController" id="auU-Xa-kbJ" customClass="NewAnnouncementsViewController" customModule="BasicChat" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="NewAnnouncementsViewController" title="NewAnnouncementsViewController" id="auU-Xa-kbJ" customClass="NewAnnouncementsViewController" customModule="BasicChat" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="vme-bV-2uY">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -234,6 +234,7 @@
         <scene sceneID="QKM-Of-CoZ">
             <objects>
                 <navigationController id="Pog-ru-94i" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="qpm-Sa-qPG"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="pZj-qb-dNV">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
