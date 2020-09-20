@@ -11,12 +11,25 @@ import UIKit
 class NewAnnouncementsViewController: UIViewController {
 
     
-    @IBOutlet weak var titleField: UITextField!
-
-    @IBOutlet weak var descriptionField: UITextField!
+    @IBOutlet weak var titleField: UITextView!
+    @IBOutlet weak var descriptionField: UITextView!
+    
+    private func setupFields(){
+        titleField.layer.borderColor = UIColor.placeholderText.cgColor
+        titleField.layer.borderWidth = 1.0
+        titleField.layer.cornerRadius = 8
+        titleField.delegate = self
+        
+        descriptionField.layer.borderColor = UIColor.placeholderText.cgColor
+        descriptionField.layer.borderWidth = 1.0
+        descriptionField.layer.cornerRadius = 8
+        descriptionField.delegate = self
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        setupFields()
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Create", style: .done, target: self, action: #selector(createAnnouncement))
 
         // Do any additional setup after loading the view.
@@ -40,5 +53,26 @@ class NewAnnouncementsViewController: UIViewController {
 
         })
     }
+}
 
+extension NewAnnouncementsViewController: UITextViewDelegate {
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.textColor == .placeholderText {
+            textView.text = ""
+            textView.textColor = .black
+        }
+        textView.becomeFirstResponder()
+    }
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text == "" {
+            if textView.accessibilityIdentifier == "Title" {
+                textView.text = "Title"
+            }
+            if textView.accessibilityIdentifier == "Description" {
+                textView.text = "Description"
+            }
+            textView.textColor = .placeholderText
+        }
+        textView.resignFirstResponder()
+    }
 }

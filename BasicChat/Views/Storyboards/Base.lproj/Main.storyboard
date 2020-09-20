@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="fZX-rd-Ikw">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="fZX-rd-Ikw">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
@@ -118,6 +118,7 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="tZN-6g-U70">
                                 <rect key="frame" x="0.0" y="88" width="414" height="725"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <inset key="separatorInset" minX="15" minY="0.0" maxX="15" maxY="0.0"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="AnnouncementTableViewCell" id="y8i-Hr-c7i" customClass="AnnouncementTableViewCell" customModule="BasicChat" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="414" height="68.5"/>
@@ -185,50 +186,51 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Title" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ysq-Rb-77m">
-                                <rect key="frame" x="20" y="108" width="374" height="34"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                                <connections>
-                                    <action selector="titleField" destination="CWB-2w-Xjb" eventType="editingDidEnd" id="hIV-Ef-Qxt"/>
-                                    <action selector="titleField:" destination="CWB-2w-Xjb" eventType="editingDidEnd" id="CgL-6G-y6R"/>
-                                </connections>
-                            </textField>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="top" borderStyle="roundedRect" placeholder="Description" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="HlX-0F-OSa">
-                                <rect key="frame" x="20" y="162" width="374" height="200"/>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Description" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="NxO-dD-zX2">
+                                <rect key="frame" x="20" y="152" width="374" height="200"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <accessibility key="accessibilityConfiguration" identifier="Description"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="200" id="Kik-Uc-boX"/>
+                                    <constraint firstAttribute="height" constant="200" id="g5E-RR-3Ue"/>
                                 </constraints>
+                                <color key="textColor" systemColor="placeholderTextColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                                <connections>
-                                    <action selector="descriptionField:" destination="CWB-2w-Xjb" eventType="editingDidEnd" id="GBf-tm-uqI"/>
-                                </connections>
-                            </textField>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" restorationIdentifier="Title" text="Title" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="KtO-vv-CZc">
+                                <rect key="frame" x="20" y="108" width="374" height="34"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <accessibility key="accessibilityConfiguration" identifier="Title"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="34" id="tCW-JR-4Gn"/>
+                                </constraints>
+                                <color key="textColor" systemColor="placeholderTextColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="ysq-Rb-77m" firstAttribute="leading" secondItem="5Mi-pc-fSA" secondAttribute="leading" constant="20" id="1fh-MP-vwV"/>
-                            <constraint firstItem="ysq-Rb-77m" firstAttribute="centerX" secondItem="vme-bV-2uY" secondAttribute="centerX" id="DMb-kg-4ni"/>
-                            <constraint firstItem="5Mi-pc-fSA" firstAttribute="trailing" secondItem="HlX-0F-OSa" secondAttribute="trailing" constant="20" id="Uh1-Ka-5nF"/>
-                            <constraint firstItem="ysq-Rb-77m" firstAttribute="top" secondItem="5Mi-pc-fSA" secondAttribute="top" constant="20" id="W0r-gH-YTR"/>
-                            <constraint firstItem="5Mi-pc-fSA" firstAttribute="trailing" secondItem="ysq-Rb-77m" secondAttribute="trailing" constant="20" id="dbS-nh-ZxP"/>
-                            <constraint firstItem="HlX-0F-OSa" firstAttribute="leading" secondItem="5Mi-pc-fSA" secondAttribute="leading" constant="20" id="jNv-xB-qT4"/>
-                            <constraint firstItem="HlX-0F-OSa" firstAttribute="top" secondItem="ysq-Rb-77m" secondAttribute="bottom" constant="20" id="nNE-tE-B9z"/>
-                            <constraint firstItem="HlX-0F-OSa" firstAttribute="centerX" secondItem="vme-bV-2uY" secondAttribute="centerX" id="zP0-1j-ZQd"/>
+                            <constraint firstItem="5Mi-pc-fSA" firstAttribute="trailing" secondItem="NxO-dD-zX2" secondAttribute="trailing" constant="20" id="4GI-Op-7fo"/>
+                            <constraint firstItem="5Mi-pc-fSA" firstAttribute="trailing" secondItem="KtO-vv-CZc" secondAttribute="trailing" constant="20" id="4L5-qw-89Z"/>
+                            <constraint firstItem="NxO-dD-zX2" firstAttribute="centerX" secondItem="vme-bV-2uY" secondAttribute="centerX" id="AO0-KP-Zyx"/>
+                            <constraint firstItem="KtO-vv-CZc" firstAttribute="top" secondItem="5Mi-pc-fSA" secondAttribute="top" constant="20" id="FzT-tM-IoM"/>
+                            <constraint firstItem="NxO-dD-zX2" firstAttribute="leading" secondItem="5Mi-pc-fSA" secondAttribute="leading" constant="20" id="Poo-Xf-Bdj"/>
+                            <constraint firstItem="NxO-dD-zX2" firstAttribute="top" secondItem="KtO-vv-CZc" secondAttribute="bottom" constant="10" id="fhO-v4-Jcg"/>
+                            <constraint firstItem="KtO-vv-CZc" firstAttribute="centerX" secondItem="vme-bV-2uY" secondAttribute="centerX" id="rZV-GN-uck"/>
+                            <constraint firstItem="KtO-vv-CZc" firstAttribute="leading" secondItem="5Mi-pc-fSA" secondAttribute="leading" constant="20" id="ssD-tp-FeS"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="5Mi-pc-fSA"/>
                     </view>
                     <navigationItem key="navigationItem" title="Create New Announcement" id="IiA-5H-rfb"/>
                     <connections>
-                        <outlet property="descriptionField" destination="HlX-0F-OSa" id="aVJ-pl-91u"/>
-                        <outlet property="titleField" destination="ysq-Rb-77m" id="ajm-gw-3Dx"/>
+                        <outlet property="descriptionField" destination="NxO-dD-zX2" id="W0Z-Fj-NmD"/>
+                        <outlet property="titleField" destination="KtO-vv-CZc" id="xg4-bN-T8k"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ASe-hl-ofG" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <exit id="CWB-2w-Xjb" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2943" y="871"/>
+            <point key="canvasLocation" x="2942.0289855072465" y="870.53571428571422"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="QKM-Of-CoZ">

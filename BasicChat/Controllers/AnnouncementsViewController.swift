@@ -24,6 +24,7 @@ class AnnouncementsViewController: UIViewController {
         startListeningForAnnouncements()
 //        tableView.delegate = self
         tableView.dataSource = self
+        tableView.tableFooterView = UIView(frame: .zero)
 
         // Do any additional setup after loading the view.
     }
