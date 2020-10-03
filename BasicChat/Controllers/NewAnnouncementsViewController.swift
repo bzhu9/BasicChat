@@ -31,7 +31,7 @@ class NewAnnouncementsViewController: UIViewController {
 //        descriptionField.layer.cornerRadius = 8
         descriptionField.delegate = self
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -48,10 +48,13 @@ class NewAnnouncementsViewController: UIViewController {
                 description.replacingOccurrences(of: " ", with: "").count != 0,
                 let name = UserDefaults.standard.value(forKey: "name") as? String,
                 let email = UserDefaults.standard.value(forKey: "email") as? String,
-                let photoURLs = self?.photoURLs
+                var photoURLs = self?.photoURLs
                 
                 else{
                     return
+            }
+            if photoURLs.isEmpty {
+                photoURLs.append("blah")
             }
             let safeEmail = DatabaseManager.safeEmail(emailAddress: email)
             AnnouncementsDatabaseManager.shared.createNewAnnouncement(with: Announcement(authorName: name, authorEmail: safeEmail, title: title, description: description, organization: "Test", photoURLS: photoURLs, comments: [Comment(senderName: "Kyle Xu", senderEmail: "kxu", commentText: "Wow this ia great post!")]), completion: {_ in

@@ -53,6 +53,7 @@ final class ChatViewController: MessagesViewController {
                 self.chatId = id
             }
         }
+            
         else {
             self.chatId = id
         }

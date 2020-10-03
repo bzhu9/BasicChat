@@ -57,6 +57,7 @@ class NewConversationCell: UITableViewCell {
             switch result{
             case .success(let url):
                 DispatchQueue.main.async {
+                    print(url)
                     self?.userImageView.sd_setImage(with: url, completed: nil)
                 }
             case .failure(let error):
