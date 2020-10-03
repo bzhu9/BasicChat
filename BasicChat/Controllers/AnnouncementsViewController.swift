@@ -17,10 +17,10 @@ class AnnouncementsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let composeButton = UIBarButtonItem(barButtonSystemItem: .add,
-                                            target: self,
-                                            action: #selector(didTapComposeButton))
-        navigationItem.rightBarButtonItems = [composeButton]
+//        let composeButton = UIBarButtonItem(barButtonSystemItem: .add,
+//                                            target: self,
+//                                            action: #selector(didTapComposeButton))
+//        navigationItem.rightBarButtonItems = [composeButton]
         startListeningForAnnouncements()
 //        tableView.delegate = self
         tableView.dataSource = self
